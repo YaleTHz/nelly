@@ -1,0 +1,19 @@
+{
+    "settings":
+    {
+	"freq_start": 0.2,
+	"freq_step": 0.01,
+	"freq_end": 2.2,
+	"windowing": "gaussian"
+    },
+    
+    "materials":
+    {
+	"quartz": {"d": 1, "n": "refractive_indices/mat1.csv"},
+	"sample": {"d": 1.51, "n": "solve"}
+    },
+
+    "geometry": ["quartz", "sample"]
+}
+
+    
