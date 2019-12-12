@@ -1,0 +1,15 @@
+{
+"io":{
+"input_dir":"",
+"output_dir":"",
+"sample":"cell_ref_filled.tim",
+"reference":"cell_ref_empty.tim",
+"output":"cell_filled_test_output",
+"window":"none",
+"window_width":2,
+"zero_padding":16,
+"flip_time":false,
+"flip_ampl":false,
+"TRTS":false},
+"run":{
+"file":""}}

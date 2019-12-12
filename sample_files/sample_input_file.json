@@ -1,0 +1,64 @@
+{
+    "settings":
+    {
+	"a_cut": 6e-5,  // amplitude cutoff for reflections
+	                // reflections below this amplitude (relative to peak)
+	                // will be ignored
+	// specifying the frequency range
+        // the refractive index will be calculated at each 
+        // frequency between freq_lo and freq_hi with step size
+        // freq_step
+	"freq_lo": 0.2,
+	"freq_step": 0.1,
+	"freq_hi": 2.2,
+	"fft" : {
+	    "windowing_type": "none", // specifies the type of windowing
+                                      // used to suppress noise in the
+        			      // time domain traces. 
+                                      // options are:
+	                              //   "gauss", "square", "none"
+                                      // see TD_window.m for more info
+        			      // Since the package is designed to handle 
+                                      // reflections and other features that may be removed
+                                      // in the windowing, windowing is discouraged.
+	    "windowing_width" : 2,   // the width of the window 
+        		             // for square windows, this is
+                                     //    just the width of the square
+	                             //     (centered on the peak amplitude)
+        	                     // for gauss windowing, this is
+                                     //    the std dev of the gaussian
+	                             //    (also centered on the peak amplitude)
+	    "padding" : 18           // the base 2 log of the zero-padding used
+	                             // in the Fourier transform, i.e. pads
+	                             // the time domain with zeros until its
+	                             // total length is 2^16
+	                          
+	}
+    },
+    
+    "sample":
+    [
+	// each line is corresponds to a layer of the sample
+	// d is the thickness (in microns)
+	// n is the refractive index. This can either be a static value,
+	// a filename with a series of values, or "solve" (for the material whose
+	// refractive index we're trying to find)
+	{"name": "air",      "d": 0,    "n": 1},  
+	{"name": "quartz",   "d": 1250, "n": 2}, 
+	{"name": "water",    "d": 100,  "n": "solve"},
+	{"name": "quartz",   "d": 1250, "n": 2},
+	{"name": "air",      "d": 0,    "n": 1}
+    ],
+    
+    "reference":
+    [
+    	{"name": "air",      "d": 0,    "n": 1},
+	{"name": "quartz",   "d": 1250, "n": 2}, 
+	{"name": "air",      "d": 100,  "n": 1},
+	{"name": "quartz",   "d": 1250, "n": 2},
+	{"name": "air",      "d": 0,    "n": 1}
+    ]
+
+}
+
+    

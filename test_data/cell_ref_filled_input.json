@@ -1,0 +1,35 @@
+{
+    "settings":
+    {
+	"a_cut": 6e-5,
+	"freq_lo": 0.2,
+	"freq_step": 0.1,
+	"freq_hi": 2.2,
+	"fft" : {
+	    "windowing_type": "none",
+	    "windowing_width" : 2,
+	    "padding" : 18
+	}
+    },
+    
+    "sample":
+    [
+	{"name": "air",      "d": 0,    "n": 1},
+	{"name": "quartz",   "d": 1250, "n": 2}, 
+	{"name": "water",    "d": 100,  "n": "solve"},
+	{"name": "quartz",   "d": 1250, "n": 2},
+	{"name": "air",      "d": 0,    "n": 1}
+    ],
+    
+    "reference":
+    [
+    	{"name": "air",      "d": 0,    "n": 1},
+	{"name": "quartz",   "d": 1250, "n": 2}, 
+	{"name": "air",      "d": 100,  "n": 1},
+	{"name": "quartz",   "d": 1250, "n": 2},
+	{"name": "air",      "d": 0,    "n": 1}
+    ]
+
+}
+
+    

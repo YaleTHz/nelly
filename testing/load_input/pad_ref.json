@@ -1,0 +1,31 @@
+{
+    "settings":
+    {
+	"a_cut": 6e-5,
+	"freq_lo": 0.4,
+	"freq_step": 0.1,
+	"freq_hi": 2.2,
+	"fft" : {
+	    "windowing_type": "none",
+	    "windowing_width" : 2,
+	    "padding" : 16
+	}
+    },
+    
+    "sample":
+    [
+	{"name": "air",      "d": 0,   "n": 1},
+	{"name": "quartz",   "d": 225, "n": 2},
+	{"name": "sample",   "d": 4,   "n": 2},
+	{"name": "air",      "d": 0,   "n": 1}
+    ],
+
+    "reference":
+    [
+	{"name": "air",      "d": 0,   "n": 1},
+	{"name": "quartz",   "d": 225, "n": 2},
+	{"name": "air",      "d": 0,   "n": 1}
+    ]
+}
+
+    
