@@ -17,4 +17,6 @@
 
 4. `build_transfer_function` takes in layer information (defined in input file and the files it points to) and returns a function which takes two arguments: $n$ and $\omega$. The function returns the predicted transfer function at frequency $\omega$ assuming the unknown refractive index is $n$. 
 
+5. `TD_window` windows the time domain trace to suppress etalons
+
    
