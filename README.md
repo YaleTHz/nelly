@@ -11,7 +11,7 @@
 
 1. `load_input` loads input file and returns a structure containing relevant data. Also checks input for errors 
 
-2. `fft_func` (or some other name)--takes two arguments-- vectors for E(t) and t-- and returns the Fourier transform
+2. `fft_func` (or some other name) takes two arguments which define the time domain trace --`E` and `t` -- as well as the number of points to pad the FFT (`N`). It returns the frequency vector (in THz) and the fft amplitudes.
 
 3. `disc_data` interpolates input data to match requested data spacing
 

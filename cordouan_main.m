@@ -1,10 +1,11 @@
-function [n] = cordouan_main(input_file_name, t_smp, e_smp, t_ref, e_ref)
-%% load data  
-%% calculate experimental transfer function
-E_smp = fft_func(t_ref, t_thz);
-E_ref = fft_func(e
+function [n] = cordouan_main(input_file_name, t_smp, A_smp, t_ref, A_ref)
+%% load data
 
-tf_exp = E_smp./E_ref;
+%% calculate experimental transfer function
+spec_smp = fft_func(t_smp, A_smp, input.settings.windowing);
+spec_ref = fft_func(t_ref, A_ref, input.settings.windowing);
+
+tf_exp = spec_smp./spec_ref;
 
 
 %% build transfer function 
