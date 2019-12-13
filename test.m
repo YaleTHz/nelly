@@ -14,12 +14,14 @@ data = importdata([path '001.tim']);
 
 t = data(:,1);
 a = data(:,2);
+opts_gauss = struct('windowing_type', 'gauss', 'windowing_width', 3, 'padding', 2132);
+opts_none = struct('windowing_type', 'none', 'windowing_width', 3, 'padding', 2132);
 
 a_gauss = TD_window(t, a, 'gauss' ,3);
 
 N = 2132;
-[freq, spec] = fft_func(t,a_gauss, N, 'none', 1);
-[freq_gauss, spec_gauss] = fft_func(t, a, N, 'gauss', 3);
+[freq, spec] = fft_func(t,a_gauss, opts_none);
+[freq_gauss, spec_gauss] = fft_func(t, a, opts_gauss);
 
 assert(sum(spec_gauss ~= spec) == 0)
 
