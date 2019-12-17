@@ -13,11 +13,11 @@
     
     "materials":
     {
-	"quartz": {"d": 1, "n": "refractive_indices/mat1.csv"},
-	"sample": {"d": 1.51, "n": "solve"}
+	"quartz": {"d": 1, "n": "sample_files/mat1.csv"},
+	"sample": {"d": 1.51, "n": "sample_files/mat2.csv"}
     },
 
-    "geometry": ["quartz", "sample"]
+    "geometry": ["quartz", "sample", "quartz"]
 }
 
     
