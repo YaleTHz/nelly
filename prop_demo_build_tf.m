@@ -15,9 +15,6 @@ end
 
 spec_prop = spec.*tf_prop;
 
-pad = 2^input.settings.fft.padding;
-t_ifft = mean(diff(t))*[1:pad];
-
 figure()
 subplot(1,2,1)
 semilogy(freq, abs(spec))
@@ -26,12 +23,15 @@ semilogy(freq, abs(spec_prop), '--')
 xlim([0 8])
 set(allchild(gca), 'linewidth', 2.2)
 
+pad_back = 2^14;
+t_ifft = taxis(t, 2^input.settings.fft.padding, pad_back);
+
 subplot(1,2,2)
-plot(t_ifft, real(ifft(spec.*tf_prop, pad)))
+plot(t_ifft, real(ifft(spec, pad_back)))
 hold on
-plot(t_ifft, real(ifft(spec, pad)))
+plot(t_ifft, real(ifft(spec.*tf_prop, pad_back)))
 title(input.geometry)
-xlim([0 20])
+xlim([0 30])
 
 
 

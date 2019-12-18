@@ -7,16 +7,16 @@
 	"fft" : {
 	    "windowing_type": "none",
 	    "windowing_width" : 2,
-	    "padding" : 16
+	    "padding" : 14
 	}
     },
     
     "materials":
     {
-	"si": {"d": 400, "n": 3.42}
+	"si": {"d": 900, "n": 3.42}
     },
 
-    "geometry": ["si", "si", "si"]
+    "geometry": ["si"]
 }
 
     
