@@ -7,17 +7,16 @@
 	"fft" : {
 	    "windowing_type": "none",
 	    "windowing_width" : 2,
-	    "padding" : 14
+	    "padding" : 16
 	}
     },
     
     "materials":
     {
-	"quartz": {"d": 1, "n": "sample_files/mat1.csv"},
-	"sample": {"d": 1.51, "n": "sample_files/mat2.csv"}
+	"si": {"d": 400, "n": 3.42}
     },
 
-    "geometry": ["quartz", "sample", "quartz"]
+    "geometry": ["si", "si", "si"]
 }
 
     

@@ -19,7 +19,7 @@ for ii = 1:numel(geom)
         
     % unknown refractive index (what we're solving for 
     elseif strcmp(mat.n, 'solve')
-        mat.n_func = @(w, n_solve) n_solve;
+        mat.n_func = @(f, n_solve) n_solve;
         
     % load values for refractive
     else
@@ -29,14 +29,16 @@ for ii = 1:numel(geom)
         dat = importdata(mat.n);
         freq = dat(:,1);
         n = dat(:,2);
-        mat.n_func = @(w, n_solve) n(freq == w);
+        mat.n_func = @(f, n_solve) n(freq == f);
     end
     mat_list{ii} = mat;
     fprintf('%d. %0.2f um of material w n from %s\n', ii, mat.d, mat.n)
 end
 
-mat_list
+c = physconst('LightSpeed')*1e6; %um/s
 
-func = @(w, n_solve) prod(cellfun(@(m) m.n_func(w, n_solve), mat_list));
+prop = @(freq, d, n) exp(-1i*(2*pi*freq*1e12/c)*n*d);
+func = @(freq, n_solve) prod(cellfun(@(m) prop(freq, m.n_func(freq, n_solve),m.d),...
+    mat_list));
 
 end

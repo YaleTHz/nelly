@@ -21,7 +21,9 @@ tf_spec = spec_smp_disc./spec_ref_disc;
 
 %% build transfer function 
 func = build_transfer_function(input);
-func(0.2, 1)
+
+%f(w, n_solve)
+func(0.2, 4)
 % 
 % %% loop over data points
 % 
