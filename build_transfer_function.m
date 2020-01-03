@@ -38,7 +38,8 @@ end
 c = physconst('LightSpeed')*1e6; %um/s
 
 prop = @(freq, d, n) exp(-1i*(2*pi*freq*1e12/c)*n*d);
+
+% should probably be something
 func = @(freq, n_solve) prod(cellfun(@(m) prop(freq, m.n_func(freq, n_solve),m.d),...
     mat_list));
-
 end
