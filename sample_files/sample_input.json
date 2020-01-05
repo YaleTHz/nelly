@@ -13,7 +13,7 @@
     
     "materials":
     {
-	"Si": {"d": 200, "n": "solve"}
+	"Si": {"d": 328, "n": "solve"}
     },
 
     "geometry": ["Si"]

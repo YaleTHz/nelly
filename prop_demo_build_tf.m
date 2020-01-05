@@ -10,7 +10,7 @@ func = build_transfer_function(input);
 tf_prop = zeros(numel(spec),1);
 
 for i = 1:numel(freq)
-    tf_prop(i) = func(freq(i), 7);
+    tf_prop(i) = func(freq(i), 3.4175);
 end
 
 spec_prop = spec.*tf_prop;

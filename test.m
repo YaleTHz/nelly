@@ -25,3 +25,5 @@ N = 2132;
 
 assert(sum(spec_gauss ~= spec) == 0)
 
+%% test that transfer function is the same for two layers of substrate vs. one 
+% layer of the same thickness
