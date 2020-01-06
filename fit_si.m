@@ -26,14 +26,14 @@ t_smp = [t_smp_pad'; t_smp]; A_smp = [A_smp_pad; A_smp];
 tf_exp = spec_smp./spec_ref;
 
 %% generate transfer function
-func = build_transfer_function(input);
+[func, prop_func] = build_transfer_function(input);
 
 %% fit to experimental transfer function
 sets = input.settings;
 freq = sets.freq_lo:sets.freq_step:sets.freq_hi;
 n_fit = zeros(2,numel(freq));
 
-n_prev = [3.44 0];
+n_prev = [5 0];
 
 disc_tf_exp = zeros(size(freq));
 

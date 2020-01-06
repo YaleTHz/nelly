@@ -1,4 +1,4 @@
-function [func] = build_transfer_function(input)
+function [func, prop_func] = build_transfer_function(input)
 mats = input.materials;
 geom = input.geometry;
 %geom = [{'air'}, geom', {'air'}];
@@ -41,6 +41,7 @@ c = physconst('LightSpeed')*1e6; %um/s
 
 prop = @(freq, d, n) exp(-1i*(2*pi*freq*1e12/c)*n*d);
 
+prop_func = @(freq, n_solve) prod(cellfun(@(m) prop(freq, m.n_func(freq, n_solve),m.d),mat_list));
 
 func = @(freq, n_solve) tran(freq, n_solve)*...
     prod(cellfun(@(m) prop(freq, m.n_func(freq, n_solve),m.d),...
@@ -63,6 +64,5 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
         n_j = mat_list{end}.n_func(freq, n_solve);
         n_k = 1;
         t = t*2*n_j/(n_j + n_k);
-
     end
 end

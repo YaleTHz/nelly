@@ -2,7 +2,7 @@
     "settings":
     {
 	"freq_lo": 0.2,
-	"freq_step": 0.05,
+	"freq_step": 0.1,
 	"freq_hi": 2.2,
 	"fft" : {
 	    "windowing_type": "none",
@@ -13,10 +13,10 @@
     
     "materials":
     {
-	"Si": {"d": 328, "n": "solve"}
+	"Si": {"d": 109.3, "n": "solve"}
     },
 
-    "geometry": ["Si"]
+    "geometry": ["Si", "Si", "Si"]
 }
 
     
