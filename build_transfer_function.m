@@ -29,7 +29,7 @@ for ii = 1:numel(geom)
         dat = importdata(mat.n);
         freq = dat(:,1);
         n = dat(:,2);
-        mat.n_func = @(f, n_solve) n(freq == f);
+        mat.n_func = @(f, n_solve) interp1(freq, n, f);
     end
     mat_list{ii} = mat;
     fprintf('%d. %0.2f um of material w n from %s\n', ii, mat.d, mat.n)
