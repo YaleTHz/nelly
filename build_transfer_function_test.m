@@ -6,7 +6,6 @@ n2 = arrayfun(@(f) f2(f,0), freq);
 assert(norm(n2-n1)/min([norm(n1), norm(n2)]) < 1e-5, ...
     'Function from build_transfer function does not match analytical expression (propagation + transmission)')
 
-
 function [func_an, func_built] = twoLayerStaticTranProp(d1, n1, d2, n2)
 c = physconst('LightSpeed')*1e-6;
 func_an =  @(freq) exp(-1i*(d1*n1+d2*n2)*freq*2*pi/c)*...
