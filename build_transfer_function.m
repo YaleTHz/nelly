@@ -1,11 +1,11 @@
-function [func, prop_func] = build_transfer_function(input)
-geom = input.layers;
+function [func, prop_func, tran_func] = build_transfer_function(geom)
 
+%% propagation part of transfer function
 c = physconst('LightSpeed')*1e6; %um/s
-
 prop = @(freq, d, n) exp(-1i*(2*pi*freq*1e12/c)*n*d);
-
 prop_func = @(freq, n_solve) prod(cellfun(@(m) prop(freq, m.n_func(freq, n_solve),m.d),geom));
+
+tran_func = @(freq, n_solve) tran(freq, n_solve);
 
 func = @(freq, n_solve) tran(freq, n_solve)*...
     prod(cellfun(@(m) prop(freq, m.n_func(freq, n_solve),m.d),...

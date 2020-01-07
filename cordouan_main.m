@@ -21,7 +21,7 @@ spec_ref_disc = interp1(freq_ref, spec_ref, freq);
 tf_spec = spec_smp_disc./spec_ref_disc;
 
 %% build transfer function 
-[func, ~] = build_transfer_function(input);
+[func, ~] = build_transfer_function(input.layers);
 
 %% perform fitting
 n_fit = zeros(2, numel(freq));

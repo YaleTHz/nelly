@@ -26,7 +26,7 @@ t_smp = [t_smp_pad'; t_smp]; A_smp = [A_smp_pad; A_smp];
 tf_exp = spec_smp./spec_ref;
 
 %% generate transfer function
-[func, prop_func] = build_transfer_function(input);
+[func, prop_func] = build_transfer_function(input.layers);
 
 %% fit to experimental transfer function
 sets = input.settings;
