@@ -8,7 +8,7 @@ mats = input.materials;
 
 assert(numel(geom)> 0, 'input geometry does not have any materials')
 
-input.layers = cell(1,numel(geom));
+input.layers = cell(1,numel(geom)+2);
 
 for ii = 1:numel(geom)
     mat = mats.(geom{ii});
@@ -23,18 +23,19 @@ for ii = 1:numel(geom)
     elseif strcmp(mat.n, 'solve')
         mat.n_func = @(f, n_solve) n_solve;
         
-    % load values for refractive
+    % load values for refractive index
     else
         assert(isfile(mat.n),...
             'couldnt find refractive index file %s', mat.n)
-        % maybe separate data load  into its own function later
         dat = importdata(mat.n);
         freq = dat(:,1);
         n = dat(:,2);
         mat.n_func = @(f, n_solve) interp1(freq, n, f);
     end
-    input.layers{ii} = mat;
+    input.layers{ii+1} = mat;
     fprintf('%d. %0.2f um of material w n from %s\n', ii, mat.d, mat.n)
 end
 
+air = struct('d', 0, 'n', 1, 'n_func', @(f, n_solve) 1);
+input.layers{1} = air; input.layers{end} = air;
 end
