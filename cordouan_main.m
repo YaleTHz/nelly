@@ -1,4 +1,4 @@
-function [n_fit] = cordouan_main(input_file_name, t_smp, A_smp, t_ref, A_ref)
+function [freq, n_fit] = cordouan_main(input_file_name, t_smp, A_smp, t_ref, A_ref)
 %% error checking
 
 %% load and process data
