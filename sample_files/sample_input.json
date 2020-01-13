@@ -2,7 +2,7 @@
     "settings":
     {
 	"freq_lo": 0.2,
-	"freq_step": 0.2,
+	"freq_step": 0.05,
 	"freq_hi": 2.2,
 	"fft" : {
 	    "windowing_type": "none",
@@ -11,12 +11,12 @@
 	}
     },
     
-    "materials":
-    {
-	"Si": {"d": 164, "n": "solve"}
-    },
-
-    "geometry": ["Si", "Si"]
+    "sample":
+    [
+	{"name": "air",      "d": 0,   "n": 1},
+	{"name": "quartz",   "d": 230, "n": "solve"}, 
+	{"name": "air",      "d": 0,   "n": 1}
+    ]
 }
 
     

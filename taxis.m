@@ -1,4 +1,5 @@
 function [t_out] = taxis(t_in, N_fwd, N_back)
+N_back
 dt = mean(diff(t_in));
 
 t_tot = t_in(end)-t_in(1);
