@@ -2,7 +2,7 @@
     "settings":
     {
 	"freq_lo": 0.2,
-	"freq_step": 0.05,
+	"freq_step": 0.2,
 	"freq_hi": 2.2,
 	"fft" : {
 	    "windowing_type": "none",
@@ -14,7 +14,7 @@
     "sample":
     [
 	{"name": "air",      "d": 0,   "n": 1},
-	{"name": "si",       "d": 464, "n": "solve"}, 
+	{"name": "si",       "d": 225, "n": "solve"}, 
 	{"name": "air",      "d": 0,   "n": 1}
     ]
 }

@@ -2,7 +2,7 @@
 % Berechnet Frequenzachse mit N Punkten aus gegebener Zeitachse.
 % Calculates frequency axis with N points from given timeline.
 function [f df Nt dt] = faxis (t, N)
-Nt = length (t);
+Nt = length(t);
 dt = (t(Nt)-t(1))/(Nt-1);
 df = 1/N/dt;
 

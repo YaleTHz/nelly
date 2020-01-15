@@ -1,4 +1,4 @@
-function [func, prop_func, tran_func, fabr_func] = build_transfer_function(geom)
+function [func, prop_func, tran_func, fabr_func] = build_transfer_function(geom, M)
 
 %% propagation part of transfer function
 c = physconst('LightSpeed')*1e6; %um/s
@@ -61,7 +61,7 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
             
             min([m_time m_amp]);
             %m = 0:min([m_time m_amp]);
-            m = [0];
+            m = [0:M];
             coeff = coeff*sum(fp_single.^m);
         end
     end
