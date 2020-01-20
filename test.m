@@ -1,5 +1,5 @@
 %% test that all files are present
-files = {'cordouan_main',
+files = {'nelly_main',
     'faxis',
     'fft_func'
     'load_input'

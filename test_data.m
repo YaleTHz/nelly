@@ -22,7 +22,7 @@ t_ref= d_ref(:,1); A_ref = d_ref(:,2);
 t_smp= d_smp(:,1); A_smp = d_smp(:,2);
 
 [freq, n_fit, freq_full, tf_full, tf_spec, tf_pred, func]...
-    = cordouan_main(input_file, t_smp, A_smp, t_ref, A_ref);
+    = nelly_main(input_file, t_smp, A_smp, t_ref, A_ref);
 
 figure()
 subplot(1,2,1)
