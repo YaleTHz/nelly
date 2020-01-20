@@ -15,8 +15,9 @@ A_ref_pad = A_ref_pad - A_ref_pad(end);
 
 %% calculate experimental transfer function
 % fourier transform time domain data
-[freq_smp, spec_smp] = fft_func(t, A_smp_pad, input.settings.fft);
-[freq_ref, spec_ref] = fft_func(t, A_ref_pad, input.settings.fft);
+fft_sets = input.settings.fft;
+[freq_smp, spec_smp] = fft_func(t, A_smp_pad, fft_sets);
+[freq_ref, spec_ref] = fft_func(t, A_ref_pad, fft_sets);
 
 freq_full = freq_ref;
 tf_full = spec_smp./spec_ref;
@@ -30,7 +31,22 @@ spec_ref_disc = interp1(freq_ref, spec_ref, freq);
 tf_spec = spec_smp_disc./spec_ref_disc;
 
 %% build transfer function 
-t_cut = t_smp(end) - t_smp(A_smp == max(A_smp));
+% determine time cut off for etalons (relative to peak)
+t_cut_exp = t_smp(end) - t_smp(A_smp == max(A_smp));
+switch fft_sets.windowing_type
+    case 'gauss'
+        t_cut_wind = 3*fft_sets.windowing_width;
+    case 'square' 
+        t_cut_wind = fft_sets.windowing_width/2;
+    otherwise
+        t_cut_wind = Inf;
+end
+
+t_cut = min([t_cut_exp t_cut_wind]);
+
+delay = t_smp(A_smp == max(A_smp)) - t_ref(A_ref == max(A_ref));
+input = estimate_n(delay, input);
+
 func_smp = build_transfer_function(input.sample, 0);
 func_ref = build_transfer_function(input.reference, 0);
 func = @(freq, n_solve) func_smp(freq, n_solve)/func_ref(freq, n_solve);
@@ -41,7 +57,6 @@ n_prev = [2 -0.5];
 
 for ii = 1:numel(freq)
     err = @(n) abs(func(freq(ii), complex(n(1), n(2)))-tf_spec(ii));
-    %err = @(n) abs(f_ana(freq(ii), complex(n(1), n(2)))-tf_spec(ii));
     opts = optimset('PlotFcns', @optimplotfval);
     n_opt = fminsearch(err, n_prev, opts);
     n_prev = n_opt;

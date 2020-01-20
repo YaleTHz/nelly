@@ -1,4 +1,6 @@
-function [func, prop_func, tran_func, fabr_func] = build_transfer_function(geom, M)
+% additional arguments take the form:
+% build_transfer_function(geom, 't_cut', 4)    
+function [func, prop_func, tran_func, fabr_func] = build_transfer_function(geom, varargin)
 
 %% propagation part of transfer function
 c = physconst('LightSpeed')*1e6; %um/s
