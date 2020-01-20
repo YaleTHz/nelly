@@ -12,7 +12,7 @@ expTest('test_data/sio2_ref_air.tim',...
         'test_data/sio2_ref_input.json')
 lookright = input('Quartz refractive index: Does this look right(~2)? (y/n) ', 's');
 assert(strcmp(lookright, 'y'), 'Quartz refractive index looked incorrect')
-close
+%close
 
 function expTest(ref_file, smp_file, input_file)
 

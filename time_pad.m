@@ -21,10 +21,6 @@ dt = min([dt_ref dt_smp]);
 t_hi = max([max(t_ref) max(t_smp)]);
 n = (t_hi-t_lo)/dt;
 t = t_lo:(t_hi-t_lo)/floor(n):t_hi;
-fprintf('dt1: %0.5f\n', dt)
-fprintf('dt2: %0.05f\n', (t_hi-t_lo)/floor(n))
-fprintf('t_hi: %0.5f, t_lo: %0.5f\n', t_lo, t_hi)
-fprintf('t_mi: %0.5f, t_ma: %0.5f\n', min(t), max(t))
 
 A_smp_pad = pad(t_smp, A_smp);
 A_ref_pad = pad(t_ref, A_ref);

@@ -61,7 +61,7 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
             
             min([m_time m_amp]);
             %m = 0:min([m_time m_amp]);
-            m = [0:M];
+            m = [0];
             coeff = coeff*sum(fp_single.^m);
         end
     end

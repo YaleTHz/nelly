@@ -37,7 +37,7 @@ func = @(freq, n_solve) func_smp(freq, n_solve)/func_ref(freq, n_solve);
 
 %% perform fitting
 n_fit = zeros(2, numel(freq));
-n_prev = [2 0];
+n_prev = [2 -0.5];
 
 for ii = 1:numel(freq)
     err = @(n) abs(func(freq(ii), complex(n(1), n(2)))-tf_spec(ii));
@@ -49,5 +49,5 @@ for ii = 1:numel(freq)
     fprintf('%0.2f THz: n = %s\n', freq(ii), num2str(complex(n_opt(1), n_opt(2))))
 end
 
-tf_pred = arrayfun(@(ii) func(freq(ii), complex(n_fit(1,ii), n_fit(2, ii))), 1:numel(freq));
+ tf_pred = arrayfun(@(ii) func(freq(ii), complex(n_fit(1,ii), n_fit(2, ii))), 1:numel(freq));
 end

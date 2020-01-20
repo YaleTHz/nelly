@@ -1,6 +1,6 @@
 # Overview
 
-*Cordouan* is a package for numerically extracting the refractive indices of materials from time-domain THz (TDS) data. The picture below depicts a THz pulse passing through a layered sample. ![Fig. 1](docs/fig01.png) Upon passing through each layer, the amplitude and phase of the each frequency component of the pulse will be changed in a manner than depends on the layer's **refractive index** and **thickness**. This can be expressed as follows
+*Nelly* is a package for numerically extracting the refractive indices of materials from time-domain THz (TDS) data. The picture below depicts a THz pulse passing through a layered sample. ![Fig. 1](docs/fig01.png) Upon passing through each layer, the amplitude and phase of the each frequency component of the pulse will be changed in a manner than depends on the layer's **refractive index** and **thickness**. This can be expressed as follows
 
 > $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega) = TF(\omega, n_\text{solve}, n_1, n_2,...)$
 
@@ -90,7 +90,7 @@ The sample specification has two parts. First, the materials that make up the sa
 
 # How to run
 
-`cordouan_main(inputfile_path, t_smp, e_smp, t_ref, e_ref)`
+`nelly_main(inputfile_path, t_smp, e_smp, t_ref, e_ref)`
 
 # Functions
 
@@ -98,7 +98,7 @@ This section describes each of the functions in the package. For all functions, 
 
 ## Primary functions
 
-1. `cordouan_main` takes in an input file name and two time traces and returns a vector for the resulting calculated refracted refractive index, as well as the one for the corresponding frequencies. Conceptually, the code and be broken up into a few steps.
+1. `nelly_main` takes in an input file name and two time traces and returns a vector for the resulting calculated refracted refractive index, as well as the one for the corresponding frequencies. Conceptually, the code and be broken up into a few steps.
 
    1. **Loading and processing experimental data** 
       1. Load settings and geometry from the input file. 
