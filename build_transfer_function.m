@@ -66,16 +66,18 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
                 % separated from the main pulse by t_cut picoseconds
                 n_est = geom(ind).n_est;
                 t_refl = 1e12*2*d*n_est/c;
-                M_time = floor(t_cut/t_refl);
+                M_time = floor(t_cut/t_refl)
             
                 % based on amplitude: include reflections until their
                 % amplitude if neglible.
                 a_cut = 1e-5;
-                M_amp = round(log(a_cut)/log(abs(fp_single)));
-                M = min([M_time M_amp]);
+                M_amp = round(log(a_cut)/log(abs(fp_single)))
+                M = max([0 min([M_time M_amp])]);
             end
             m = [0:M];
             coeff = coeff*sum(fp_single.^m);
+            fprintf('%s: %d um, %d etalons\n', geom(ind).name, d, M);
         end
+        fprintf('\n')
     end
 end
