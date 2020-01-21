@@ -14,7 +14,7 @@
     "sample":
     [
 	{"name": "air",      "d": 0,   "n": 1},
-	{"name": "si",       "d": 225, "n": "solve"}, 
+	{"name": "quartz",   "d": 225, "n": "solve"}, 
 	{"name": "air",      "d": 0,   "n": 1}
     ]
 }

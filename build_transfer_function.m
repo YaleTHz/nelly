@@ -1,6 +1,20 @@
 % additional arguments take the form:
 % build_transfer_function(geom, 't_cut', 4)    
 function [func, prop_func, tran_func, fabr_func] = build_transfer_function(geom, varargin)
+assert(numel(varargin) == 2, 'need two arguments (name, value to specify etalon handling') 
+
+t_cut_specified = strcmp(varargin{1}, 't_cut');
+M_specified = strcmp(varargin{1}, 'M');
+
+assert(t_cut_specified | M_specified,...
+    'must specify a number of etalons (M) or a time cutoff (t_cut)') 
+assert(isnumeric(varargin{2}), 'value for either M or t_cut must be numberic')
+
+if t_cut_specified
+    t_cut = varargin{2};
+else
+    M = varargin{2};
+end
 
 %% propagation part of transfer function
 c = physconst('LightSpeed')*1e6; %um/s
@@ -24,7 +38,6 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
 %%%%%%%%%%%%%%%%%%%%%%%%%%% transfer %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%% function %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
     % tranmission at the interfaces between layers
     function [t] = tran(freq, n_solve)
         t = 1;
@@ -47,23 +60,21 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
             fp_single = fp(freq, d, n0, n1, n2);
                         
             % determine number of reflections 
-            % maybe change this to get parameters (t_cut, a_cut) from
-            % input? Or automatically read get t_cut from input?
             
-            % based on time: include reflections until they would be 
-            % separated from the main pulse by t_cut picoseconds
+            if t_cut_specified
+                % based on time: include reflections until they would be
+                % separated from the main pulse by t_cut picoseconds
+                n_est = geom(ind).n_est;
+                t_refl = 1e12*2*d*n_est/c;
+                M_time = floor(t_cut/t_refl);
             
-            t_refl = 1e12*2*d*real(n1)/c; t_cut = 40;
-            m_time = floor(t_cut/t_refl);
-            
-            % based on amplitude: include reflections until their
-            % amplitude if neglible.
-            a_cut = 1e-5;
-            m_amp = round(log(a_cut)/log(abs(fp_single)));
-            
-            min([m_time m_amp]);
-            %m = 0:min([m_time m_amp]);
-            m = [0];
+                % based on amplitude: include reflections until their
+                % amplitude if neglible.
+                a_cut = 1e-5;
+                M_amp = round(log(a_cut)/log(abs(fp_single)));
+                M = min([M_time M_amp]);
+            end
+            m = [0:M];
             coeff = coeff*sum(fp_single.^m);
         end
     end

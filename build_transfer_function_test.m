@@ -35,7 +35,7 @@ layers = [struct('d', 0, 'n', 1, 'n_func', @(x,y) 1),...
           struct('d', d2, 'n', n2, 'n_func', @(x,y) n2),...
           struct('d', 0, 'n', 1, 'n_func', @(x,y) 1)];
 
-[~, func_prop, func_tran] = build_transfer_function(layers,1);
+[~, func_prop, func_tran] = build_transfer_function(layers,'M',1);
 func_built = @(f, n_solve) func_prop(f, n_solve)*func_tran(f, n_solve); 
 end
 
@@ -51,6 +51,6 @@ fp_ana = @(freq, m) sum(fp(freq).^(0:m));
 layers = [struct('d', 0, 'n', 1, 'n_func', @(x,y) 1),...
           struct('d', d, 'n', n, 'n_func', @(x,y) n),...
           struct('d', 0, 'n', 1, 'n_func', @(x,y) 1)];
-[~, ~, ~, fp_blt] = build_transfer_function(layers, 1);
+[~, ~, ~, fp_blt] = build_transfer_function(layers,'M',1);
 end
 

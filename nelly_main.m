@@ -32,7 +32,7 @@ tf_spec = spec_smp_disc./spec_ref_disc;
 
 %% build transfer function 
 % determine time cut off for etalons (relative to peak)
-t_cut_exp = t_smp(end) - t_smp(A_smp == max(A_smp));
+t_cut_exp = t_smp(end) - t_smp(find(A_smp == max(A_smp),1));
 switch fft_sets.windowing_type
     case 'gauss'
         t_cut_wind = 3*fft_sets.windowing_width;
@@ -44,11 +44,11 @@ end
 
 t_cut = min([t_cut_exp t_cut_wind]);
 
-delay = t_smp(A_smp == max(A_smp)) - t_ref(A_ref == max(A_ref));
+delay = t_smp(find(A_smp == max(A_smp),1)) - t_ref(find(A_ref == max(A_ref),1));
 input = estimate_n(delay, input);
 
-func_smp = build_transfer_function(input.sample, 0);
-func_ref = build_transfer_function(input.reference, 0);
+func_smp = build_transfer_function(input.sample, 't_cut', t_cut);
+func_ref = build_transfer_function(input.reference, 't_cut', t_cut);
 func = @(freq, n_solve) func_smp(freq, n_solve)/func_ref(freq, n_solve);
 
 %% perform fitting
