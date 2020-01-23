@@ -45,7 +45,7 @@ end
 t_cut = min([t_cut_exp t_cut_wind]);
 
 delay = t_smp(find(A_smp == max(A_smp),1)) - t_ref(find(A_ref == max(A_ref),1));
-input = estimate_n(delay, input);
+[input, n_est] = estimate_n(delay, input);
 
 func_smp = build_transfer_function(input.sample, 't_cut', t_cut);
 func_ref = build_transfer_function(input.reference, 't_cut', t_cut);

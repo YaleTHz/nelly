@@ -9,14 +9,18 @@ end
 
 maps = cell(1, numel(freq));
 
+waitbar(0, 'mapping...')
+
+tot = numel(freq)*numel(n);
 for ii = 1:numel(freq)
     map = struct('freq', freq(ii));
     data = zeros(numel(k), numel(n));
     for nn = 1:numel(n)
         for kk = 1:numel(k)
             n_solve = complex(n(nn), -k(kk));
-            data(kk, nn) = norm(func(freq(ii), n_solve)-tf_exp(ii));
+            data(kk, nn) = norm(func(freq(ii), n_solve)-tf(ii));
         end
+        waitbar((ii*numel(n) + nn)/tot)
     end
     map.data = data;
     maps{ii} = map;
