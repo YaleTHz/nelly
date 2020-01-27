@@ -1,9 +1,11 @@
-function [freq, n_fit, freq_full, tf_full, tf_spec, tf_pred, func]...
-    = nelly_main(input_file_name, t_smp, A_smp, t_ref, A_ref)
+function [freq, n_fit, freq_full, tf_full, tf_spec, tf_pred, func, spec_smp, spec_ref]...
+    = nelly_main(input, t_smp, A_smp, t_ref, A_ref)
 %% error checking
 
 %% load and process data
-input = load_input(input_file_name);
+if ~ isstruct(input)
+    input = load_input(input);
+end
 
 %% check time ranges, and pad as necessary
 [t, A_smp_pad, A_ref_pad] = time_pad(t_smp, A_smp, t_ref, A_ref);
@@ -53,7 +55,7 @@ func = @(freq, n_solve) func_smp(freq, n_solve)/func_ref(freq, n_solve);
 
 %% perform fitting
 n_fit = zeros(2, numel(freq));
-n_prev = [2 -0.5];
+n_prev = [n_est 0];
 
 for ii = 1:numel(freq)
     err = @(n) abs(func(freq(ii), complex(n(1), n(2)))-tf_spec(ii));
