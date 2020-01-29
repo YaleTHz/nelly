@@ -55,7 +55,7 @@ func = @(freq, n_solve) func_smp(freq, n_solve)/func_ref(freq, n_solve);
 
 %% perform fitting
 n_fit = zeros(2, numel(freq));
-n_prev = [n_est 0];
+n_prev = [real(n_est) 0];
 
 for ii = 1:numel(freq)
     err = @(n) abs(func(freq(ii), complex(n(1), n(2)))-tf_spec(ii));

@@ -35,10 +35,13 @@ end
             else
                 pwd
                 assert(isfile(mat.n),...
-                    'couldnt find refractive index file %s', mat.n)
+                    'Could not find refractive index file %s', mat.n)
                 dat = importdata(mat.n);
                 freq = dat(:,1);
                 n = dat(:,2);
+                if size(dat, 2) == 3
+                    n = n+1i*dat(:,3);
+                end
                 geom_out(ii).n_func = @(f, n_solve) interp1(freq, n, f);
             end
             fprintf('%d. %0.2f um of material w n from %s\n', ii, mat.d, mat.n)

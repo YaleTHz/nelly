@@ -4,11 +4,13 @@
                                'test_data/si_ref_input.json');
 assert(abs((n_si-3.42)/3.42) < 0.05)
 
+%% estimate quartz n
 [input_sio2, n_sio2] = est_n_input('test_data/sio2_ref_air.tim',...
                                    'test_data/sio2_ref_smp.tim',...
                                    'test_data/sio2_ref_input.json');
 assert(abs((n_sio2-2)/2) < 0.05)
 
+%% estimate quartz cell n
 [input_sio2_cell, n_sio2_cell] = est_n_input('test_data/cell_ref_air.tim',...
                                              'test_data/cell_ref_empty.tim',...
                                              'test_data/cell_ref_input.json');

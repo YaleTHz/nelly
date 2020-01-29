@@ -67,7 +67,7 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
             if t_cut_specified
                 % based on time: include reflections until they would be
                 % separated from the main pulse by t_cut picoseconds
-                n_est = geom(ind).n_est;
+                n_est = real(geom(ind).n_est);
                 t_refl = 1e12*2*d*n_est/c;
                 M_time = floor(t_cut/t_refl);
             
