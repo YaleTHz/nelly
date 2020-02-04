@@ -81,10 +81,7 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
             end
             
             m = [0:M];
-            %fprintf('%s: %d etalons\n', geom(ind).name, M)
             coeff = coeff*sum(fp_single.^m);
-            %fprintf('%s: %d um, %d etalons\n', geom(ind).name, d, M);
         end
-        %fprintf('\n')
     end
 end

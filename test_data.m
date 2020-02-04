@@ -15,7 +15,25 @@ expTest('test_data/sio2_ref_air.tim',...
 quest = 'Quartz refractive index: Does this look right(~2)?';
 lookright = questdlg(quest, 'Check results', 'Yes', 'No', 'No');
 assert(strcmp(lookright, 'Yes'), 'Quartz refractive index looked incorrect')
-%close
+close
+
+
+%% test cell (quartz-air-quartz)
+expTest('test_data/cell_ref_air.tim',...
+        'test_data/cell_ref_empty.tim',...
+        'test_data/cell_ref_input.json')
+quest = 'Quartz refractive index: Does this look right(~2)?';
+lookright = questdlg(quest, 'Check results', 'Yes', 'No', 'No');
+assert(strcmp(lookright, 'Yes'), 'Quartz refractive index looked incorrect')
+close
+
+%% test cell (quartz-water-quartz)
+expTest('test_data/cell_ref_empty.tim',...
+        'test_data/cell_ref_filled.tim',...
+        'test_data/cell_ref_filled_input.json')
+quest = 'Water refractive index: Does this look right(~2)?';
+lookright = questdlg(quest, 'Check results', 'Yes', 'No', 'No');
+assert(strcmp(lookright, 'Yes'), 'Quartz refractive index looked incorrect')
 
 function expTest(ref_file, smp_file, input_file)
 
