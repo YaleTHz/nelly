@@ -27,7 +27,7 @@ end
             if isnumeric(mat.n)
                 geom_out(ii).n_func = @(w, n_solve) mat.n;
                 
-            % unknown refractive index (what we're solving for
+            % unknown refractive index (what we're solving for)
             elseif strcmp(mat.n, 'solve')
                 geom_out(ii).n_func = @(f, n_solve) n_solve;
                 
@@ -40,7 +40,8 @@ end
                 freq = dat(:,1);
                 n = dat(:,2);
                 if size(dat, 2) == 3
-                    n = n+1i*dat(:,3);
+                    % positive K corresponds to loss
+                    n = n-1i*dat(:,3);
                 end
                 geom_out(ii).n_func = @(f, n_solve) interp1(freq, n, f);
             end

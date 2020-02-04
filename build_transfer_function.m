@@ -67,7 +67,9 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
             if t_cut_specified
                 % based on time: include reflections until they would be
                 % separated from the main pulse by t_cut picoseconds
-                n_est = real(geom(ind).n_est);
+                
+                %n_est = real(geom(ind).n_est);
+                n_est = real(geom(ind).n_func(freq, n_solve));
                 t_refl = 1e12*2*d*n_est/c;
                 M_time = floor(t_cut/t_refl);
             
@@ -77,7 +79,9 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
                 M_amp = round(log(a_cut)/log(abs(fp_single)));
                 M = max([0 min([M_time M_amp])]);
             end
+            
             m = [0:M];
+            %fprintf('%s: %d etalons\n', geom(ind).name, M)
             coeff = coeff*sum(fp_single.^m);
             %fprintf('%s: %d um, %d etalons\n', geom(ind).name, d, M);
         end
