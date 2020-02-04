@@ -4,7 +4,7 @@
 % For the unknown layer, the refractive index is estimated using the delay
 % of the sample pulse relative to the reference
 
-function [input_new, n_est] = estimate_n(delay, input)
+function n_est = estimate_n(delay, input)
 input_new = input;
 freq = input.settings.freq_lo:input.settings.freq_step:input.settings.freq_hi;
 
@@ -25,19 +25,5 @@ c = physconst('LightSpeed')*1e6; %um/s
 % final calculation for n estimate
 n_est = (delay*c*1e-12+dn_ref-dn_smp_known)/d_unknown;
 
-for ii = 1:numel(input_new.sample)
-    if strcmp(input_new.sample(ii).n, 'solve')
-        input_new.sample(ii).n_est = n_est;
-    else
-        input_new.sample(ii).n_est = mean_n(input_new.sample(ii));
-    end
-end
 
-for ii = 1:numel(input_new.reference)
-    if strcmp(input_new.reference(ii).n, 'solve')
-        input_new.reference(ii).n_est = n_est;
-    else
-        input_new.reference(ii).n_est = mean_n(input_new.reference(ii));
-    end
-end
 

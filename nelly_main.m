@@ -48,7 +48,7 @@ t_cut = min([t_cut_exp t_cut_wind]);
 
 delay = t_smp(find(A_smp == max(A_smp),1)) - t_ref(find(A_ref == max(A_ref),1));
 fprintf('Delay = %0.3f\n', delay)
-[input, n_est] = estimate_n(delay, input)
+n_est = estimate_n(delay, input);
 
 func_smp = build_transfer_function(input.sample, 't_cut', t_cut);
 func_ref = build_transfer_function(input.reference, 't_cut', t_cut);
@@ -56,12 +56,17 @@ func = @(freq, n_solve) func_smp(freq, n_solve)/func_ref(freq, n_solve);
 
 %% perform fitting
 n_fit = zeros(2, numel(freq));
-n_prev = [real(n_est) 0];
-%n_prev = [10 -1];
+
+if real(n_est) < 0
+    n_est = 1;
+end
+k_mean = mean([min(freq) max(freq)])*2*pi*1e12/3e14;
+d_inds = find(strcmp({input.sample.n}, 'solve'));
+d_tot = sum(arrayfun(@(ii) input.sample(ii).d, d_inds));
+n_prev = [real(n_est) -log(mean(abs(tf_spec)))/(d_tot*k_mean)]
 
 for ii = 1:numel(freq)
     err = @(n) abs(func(freq(ii), complex(n(1), n(2)))-tf_spec(ii));
-    %opts = optimset('PlotFcns', @optimplotfval);
     opts = optimset();
     n_opt = fminsearch(err, n_prev, opts);
     n_prev = n_opt;
