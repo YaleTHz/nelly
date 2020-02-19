@@ -1,7 +1,7 @@
 {
     "settings":
     {
-	"freq_lo": 0.2,
+	"freq_lo": 0.4,
 	"freq_step": 0.4,
 	"freq_hi": 2.2,
 	"fft" : {

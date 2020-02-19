@@ -75,13 +75,22 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
             
                 % based on amplitude: include reflections until their
                 % amplitude if neglible.
-                a_cut = 1e-5;
+                a_cut = 1e-4;
                 M_amp = round(log(a_cut)/log(abs(fp_single)));
                 M = max([0 min([M_time M_amp])]);
             end
             
+            %fprintf('%s: %d etalons (%d, abs fp = %0.2f)\n', geom(ind).name, M, M_amp, abs(fp_single))
             m = [0:M];
-            coeff = coeff*sum(fp_single.^m);
+            %m = [0];
+            if d < 10
+                coeff = coeff/(1-rf(n1, n2)*rf(n1, n0)*prop(freq, d, n1)^2);
+                %m = 0:12;
+             else
+                 coeff = coeff*sum(fp_single.^m);
+             end
+            
+ %           coeff = coeff*sum(fp_single.^m);
         end
     end
 end
