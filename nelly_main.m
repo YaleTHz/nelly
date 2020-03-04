@@ -7,12 +7,13 @@ if ~ isstruct(input)
     input = load_input(input);
 end
 
+
 %% check time ranges, and pad as necessary
 [t, A_smp_pad, A_ref_pad] = time_pad(t_smp, A_smp, t_ref, A_ref);
 
 %remove offset to avoid artificial drop upon zero padding
-A_smp_pad = A_smp_pad - A_smp_pad(end);
-A_ref_pad = A_ref_pad - A_ref_pad(end);
+%A_smp_pad = A_smp_pad - A_smp_pad(end);
+%A_ref_pad = A_ref_pad - A_ref_pad(end);
 
 
 %% calculate experimental transfer function
@@ -24,16 +25,17 @@ fft_sets = input.settings.fft;
 freq_full = freq_ref;
 tf_full = spec_smp./spec_ref;
 
+
 % discretize
+spec_smp = spec_smp(freq_full < 4);
+spec_ref = spec_ref(freq_full < 4);
+
 freq = input.settings.freq_lo:input.settings.freq_step:input.settings.freq_hi;
-spec_smp_disc = interp1(freq_smp, spec_smp, freq);
-spec_ref_disc = interp1(freq_ref, spec_ref, freq);
+%spec_smp_disc = interp1(freq_smp, spec_smp, freq);
+%spec_ref_disc = interp1(freq_ref, spec_ref, freq);
 
-
-figure(5)
-plot(freq, unwrap(angle(spec_smp_disc))-unwrap(angle(spec_ref_disc)))
-hold on
-%plot(freq, unwrap(angle(spec_ref_disc)))
+spec_smp_disc = disc(freq_full,spec_smp, freq);
+spec_ref_disc = disc(freq_full,spec_ref, freq);
 
 % calculate transfer function
 tf_spec = spec_smp_disc./spec_ref_disc;
@@ -69,9 +71,9 @@ if real(n_est) < 0
 end
 k_mean = mean([min(freq) max(freq)])*2*pi*1e12/3e14;
 d_inds = find(strcmp({input.sample.n}, 'solve'));
-d_tot = sum(arrayfun(@(ii) input.sample(ii).d, d_inds))
+d_tot = sum(arrayfun(@(ii) input.sample(ii).d, d_inds));
 n_prev = [real(n_est) log(mean(abs(tf_spec)))/(d_tot*k_mean)]
-%n_prev = [10 -10];
+%n_prev = [50 -5];
 
 for ii = 1:numel(freq)
     %err = @(n) abs(func(freq(ii), complex(n(1), n(2)))-tf_spec(ii));
@@ -88,8 +90,22 @@ end
 
 
 function [chi] = n_error(t1, t2)
-err_ang = angle(t1)-angle(t2);
-err_trn = log(abs(t1))-log(abs(t2));
-chi = err_ang^2 + err_trn^2;
+% err_ang = angle(t1)-angle(t2);
+% err_trn = log(abs(t1))-log(abs(t2));
+% chi = err_ang^2 + err_trn^2;
 %chi = norm(t1-t2);
+
+chi1 = (log(abs(t1)) - log(abs(t2)))^2;
+chi2 = (angle(t1) - angle(t2))^2;
+chi = chi1+chi2;
+end
+
+function [disc_y] = disc(x,y, x_new)
+dx = mean(diff(x));
+disc_y = ones(1, length(x_new));
+
+for ii = 1:length(x_new)
+    inds = x >= x_new(ii)-dx & x <= x_new(ii) + dx;
+    disc_y(ii) = mean(y(inds));
+end
 end

@@ -22,19 +22,21 @@ for ii = 1:numel(freq)
             n_solve = complex(n(nn), -k(kk));
             
             t = func(freq(ii), n_solve);
-            err_ang = angle(t)-angle(tf(ii));
-            err_amp = log(abs(t))-log(abs(tf(ii)));
-            max_pct = max([max_pct 100*err_ang^2/(err_ang^2+err_amp^2)]);
+
+            FractionE = tf(ii);
+            Etarget = t;
+            chi1 = (log(abs(FractionE)) - log(abs(Etarget)))^2;
+            chi2 = (angle(FractionE) - angle(Etarget))^2;
+            data(kk, nn) = chi1+chi2;
             
             %data(kk, nn) = norm(func(freq(ii), n_solve)-tf(ii));
-            data(kk, nn) = err_ang^2+err_amp^2;
+            %data(kk, nn) = err_ang^2+err_amp^2;
         end
         waitbar((ii*numel(n) + nn)/tot)
     end
     map.data = data;
     maps{ii} = map;
 end
-max_pct
 
     
 

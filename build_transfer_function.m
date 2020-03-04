@@ -22,8 +22,9 @@ end
 %% propagation part of transfer function
 c = physconst('LightSpeed')*1e6; %um/s
 prop = @(freq, d, n) exp(-1i*(2*pi*freq*1e12/c)*n*d);
-tr = @(n1, n2) 2*n1/(n1+n2);
 rf = @(n1, n2) (n1-n2)/(n1+n2);
+%tr = @(n1, n2) 2*n1/(n1+n2);
+tr = @(n1, n2) rf(n1, n2) + 1;
 fp = @(freq, d, n0, n1, n2) prop(freq, d, n1)^2*rf(n1, n2)*rf(n1, n0);
 
 prop_func = @(freq, n_solve) prod(arrayfun(@(m) prop(freq, m.n_func(freq, n_solve),m.d),geom));
@@ -83,14 +84,14 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
             %fprintf('%s: %d etalons (%d, abs fp = %0.2f)\n', geom(ind).name, M, M_amp, abs(fp_single))
             m = [0:M];
             %m = [0];
-            if d < 10
-                coeff = coeff/(1-rf(n1, n2)*rf(n1, n0)*prop(freq, d, n1)^2);
+            if d < 1
+                coeff = coeff/(1-rf(n1, n2)*rf(n1, n0)*(prop(freq, d, n1)^2));
                 %m = 0:12;
-             else
-                 coeff = coeff*sum(fp_single.^m);
+            %else
+            %     coeff = coeff*sum(fp_single.^m);
              end
             
- %           coeff = coeff*sum(fp_single.^m);
+            %coeff = coeff*sum(fp_single.^m);
         end
     end
 end
