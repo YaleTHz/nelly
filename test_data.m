@@ -1,3 +1,5 @@
+% run this code from the follder containing the Nelly package
+% (should have subdirectory test_data)
 %% test si ref. (no reflections)
 expTest('test_data/si_ref_air.tim',...
         'test_data/si_ref_smp.tim',...
@@ -30,12 +32,22 @@ close
 %% test cell (quartz-water-quartz)
 expTest('test_data/cell_ref_empty.tim',...
         'test_data/cell_ref_filled.tim',...
-        'test_data/cell_ref_filled_input.json')
-quest = 'Water refractive index: Does this look right(~2)?';
-lookright = questdlg(quest, 'Check results', 'Yes', 'No', 'No');
-assert(strcmp(lookright, 'Yes'), 'Quartz refractive index looked incorrect')
+        'test_data/cell_ref_filled_input.json');
+% get literature data
+load 'test_data/water_lit_data.mat'
+subplot(1,2,1)
+plot(n_thz_sch, n_sch)
+plot(n_thz_thr, n_thr)
+legend('Nelly','Schmuttenmaer (1996)', 'Thrane (1995)')
+subplot(1,2,2)
+plot(a_thz_sch, a_sch*3e10./(4*pi*a_thz_sch*1e12))
+plot(a_thz_thr, a_thr*3e10./(4*pi*a_thz_thr*1e12))
 
-function expTest(ref_file, smp_file, input_file)
+quest = 'Water refractive index: Does this look right (compared to lit value)?';
+lookright = questdlg(quest, 'Check results', 'Yes', 'No', 'No');
+assert(strcmp(lookright, 'Yes'), 'Water refractive index looked incorrect')
+
+function [fig] = expTest(ref_file, smp_file, input_file)
 
 d_ref = importdata(ref_file);
 d_smp = importdata(smp_file);
@@ -45,14 +57,16 @@ t_smp= d_smp(:,1); A_smp = d_smp(:,2);
 [freq, n_fit, freq_full, tf_full, tf_spec, tf_pred, func]...
     = nelly_main(input_file, t_smp, A_smp, t_ref, A_ref);
 
-figure()
+fig = figure();
 subplot(1,2,1)
 plot(freq, n_fit(1,:))
+hold on
 xlabel('Frequency (THz)')
 ylabel('n')
 
 subplot(1,2,2)
 plot(freq, -n_fit(2,:))
+hold on
 xlabel('Frequency (THz)')
 ylabel('\kappa')
 end

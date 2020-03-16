@@ -84,7 +84,7 @@ func = @(freq, n_solve) tran(freq, n_solve)*...
             %fprintf('%s: %d etalons (%d, abs fp = %0.2f)\n', geom(ind).name, M, M_amp, abs(fp_single))
             m = [0:M];
             %m = [0];
-            if d < 1
+            if d < 10
                 coeff = coeff/(1-rf(n1, n2)*rf(n1, n0)*(prop(freq, d, n1)^2));
                 %m = 0:12;
             %else
