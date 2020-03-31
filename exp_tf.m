@@ -3,8 +3,8 @@ function [freq, tf_spec, freq_full, tf_full, spec_smp, spec_ref] = exp_tf(t_smp,
 [t, A_smp_pad, A_ref_pad] = time_pad(t_smp, A_smp, t_ref, A_ref);
 
 %remove offset to avoid artificial drop upon zero padding
-%A_smp_pad = A_smp_pad - A_smp_pad(end);
-%A_ref_pad = A_ref_pad - A_ref_pad(end);
+A_smp_pad = A_smp_pad - A_smp_pad(end);
+A_ref_pad = A_ref_pad - A_ref_pad(end);
 
 
 %% calculate experimental transfer function
