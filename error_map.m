@@ -1,3 +1,17 @@
+% This function produces a visualization of the error function to give a
+% sense of the landscape the optimization is navigating. 
+% The function takes in:
+% func: the theoretical transfer function of two variables (freq, n_solve)
+% to be mapped
+% tf_exp: the experimental transfer function we are trying to fit. The
+% error function will be calculated by comparing these values with the
+% corresponding output of func.
+% tf_freq: the frequency points (in THz) corresponding to the data in
+% tf_exp
+% n and k: vectors containing ranges of values of the real (n) and imaginary (k)
+% parts of the refractive index. The error function will be calculated at
+% every point on the grid these two vectorss define--i.e. every value of k
+% for every value of n
 function [maps] = error_map(func, tf_exp, tf_freq, n, k, varargin)
 if numel(varargin) > 0
     freq = varargin{1};
