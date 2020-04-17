@@ -1,6 +1,8 @@
 % additional arguments take the form:
 % build_transfer_function(geom, 't_cut', 4)    
-function [func, prop_func, tran_func, fabr_func] = build_transfer_function(geom, varargin)
+function [func, prop_func, tran_func, fabr_func] =...
+    build_transfer_function(geom, varargin)
+
 expected_fields = {'d', 'n', 'n_func'};
 assert(sum(isfield(geom, expected_fields)) == numel(expected_fields), ...
     'Input to build transfer function does not have required fields (n, d, etc.)');
