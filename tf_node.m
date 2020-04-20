@@ -3,6 +3,7 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
         parent
         id
         tf
+        num_layers
     end
     
     methods
@@ -26,6 +27,32 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
             end
         end
         
+        function lvs = leaves(obj)
+            nds = obj.all_nodes;
+            inds = zeros(size(nds));
+            for ii = 1:numel(nds)
+                inds(ii) = (numel(nds(ii).children) == 0);
+            end
+            lvs = nds(inds == 1);
+        end
+        
+        function em = emitted(obj)
+            lvs = obj.leaves;
+            inds = zeros(size(lvs));
+            
+            % check if transmitting into final layer
+            for ii = 1:numel(lvs)
+                if isa(lvs(ii), 'interface_node')
+                    if lvs(ii).into == obj.num_layers && lvs(ii).type == 1
+                        inds(ii) = 1;
+                    end
+                end
+            end
+            
+            em = lvs(inds == 1);
+        end
+        
+        %% functions for displaying tree
         function vec = tree_vec(obj)
             nds = obj.all_nodes;
             vec = zeros(1, numel(nds));
@@ -63,16 +90,25 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
                         'horizontalalignment', 'center', 'color', 'w', ...
                         'fontweight', 'bold', 'fontsize', 8)
                 end
+                hold on
             end
         end
         
-        function lvs = leaves(obj)
+        function show_tf(obj)
+            figure()
             nds = obj.all_nodes;
-            inds = zeros(size(nds));
+            vec = obj.tree_vec;
+            treeplot(vec)
+            set(allchild(gca), 'markersize', 1)
+            [x, y] = treelayout(vec);
+            hold on
+            
             for ii = 1:numel(nds)
-                inds(ii) = (numel(nds(ii).children) == 0);
+                plot(x(ii), y(ii), 'ok',...
+                    'markersize', 30*abs(nds(ii).tot_tf),...
+                    'markerfacecolor', [0.5 0.5 0.5])
             end
-            lvs = nds(inds == 1);
+                            
         end
     end
 end

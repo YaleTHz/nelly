@@ -13,8 +13,8 @@ classdef  interface_node < handle & tf_node
                 geom, freq, n_solve, t_cut, a_cut, parent)
             obj.from = from; obj.into = into; obj.t_acc = t_acc;
             obj.type = type; obj.parent = parent;
+            obj.num_layers = numel(geom);
             
-            fprintf('%d->%d\n', from ,into)
             n_from = geom(from).n_func(freq, n_solve);
             n_into = geom(into).n_func(freq, n_solve);
             

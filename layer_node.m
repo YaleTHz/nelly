@@ -13,12 +13,11 @@ classdef layer_node < handle & tf_node
         function obj = layer_node(index, dir, t_prev, amp_prev,...
                 geom, freq, n_solve, t_cut, a_cut, parent)
             
-            fprintf('layer %d\n', index)
-
             prop = node_constants.prop;
             
             obj.index = index; obj.dir = dir; obj.parent = parent;
-
+            obj.num_layers = numel(geom);
+            
             % calculate new time delay
             n = geom(index).n_func(freq, n_solve);
             d = geom(index).d;
