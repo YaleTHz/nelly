@@ -1,5 +1,7 @@
 classdef tf_node < handle & matlab.mixin.Heterogeneous
     properties
+        parent
+        id
     end
     
     methods
@@ -35,19 +37,32 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
             treeplot(vec)
             [x, y] = treelayout(vec);
             for ii = 1:numel(nds)
-                id = nds(ii).id;
+                ind = nds(ii).id;
                 if isa(nds(ii), 'interface_node')
-                    text(x(id), y(id), nds(ii).to_s,...
-                        'backgroundcolor', '[1 0.6 0.6]',...
+                    color = [1 0.6 0.6];
+                    if nds(ii).type == -1
+                        color = [1 0.7 0.5];
+                    end
+                    text(x(ind), y(ind), nds(ii).to_s,...
+                        'backgroundcolor', color ,...
                         'horizontalalignment', 'center', 'color', 'w', ...
                         'fontweight', 'bold', 'fontsize', 8)
                 else
-                    text(x(id), y(id), nds(ii).to_s,...
+                    text(x(ind), y(ind), nds(ii).to_s,...
                         'backgroundcolor', '[0.6 0.6 1]',...
                         'horizontalalignment', 'center', 'color', 'w', ...
                         'fontweight', 'bold', 'fontsize', 8)
                 end
             end
+        end
+        
+        function lvs = leaves(obj)
+            nds = obj.all_nodes;
+            inds = zeros(size(nds));
+            for ii = 1:numel(nds)
+                inds(ii) = (numel(nds(ii).children) == 0);
+            end
+            lvs = nds(inds == 1);
         end
     end
 end

@@ -6,20 +6,18 @@ classdef layer_node < handle & tf_node
         dir    % forward (+1, i.e. increasing index) or backward (-1)
         ref    % interface node for reflection
         trn    % interface node for transmission
-        id
     end
     
     methods
         % t_acc is time *prior* to entering layer
         function obj = layer_node(index, dir, t_prev, amp_prev,...
-                geom, freq, n_solve, t_cut, a_cut)
+                geom, freq, n_solve, t_cut, a_cut, parent)
             
             fprintf('layer %d\n', index)
-            % constants and functions
-            c = physconst('LightSpeed')*1e6; %um/s
-            prop = @(freq, d, n) exp(-1i*(2*pi*freq*1e12/c)*n*d);
+
+            prop = node_constants.prop;
             
-            obj.index = index; obj.dir = dir;
+            obj.index = index; obj.dir = dir; obj.parent = parent;
 
             % calculate new time delay
             n = geom(index).n_func(freq, n_solve);
@@ -40,13 +38,13 @@ classdef layer_node < handle & tf_node
                 % reflection
                 if index ~= 1
                     obj.ref = interface_node(index, into, -1, t_acc, amp,...
-                        geom, freq, n_solve, t_cut, a_cut);
+                        geom, freq, n_solve, t_cut, a_cut, obj);
                 end
                 
                 % transmission
                 if into ~= 1
                     obj.trn = interface_node(index, into, +1, t_acc, amp,...
-                        geom, freq, n_solve, t_cut, a_cut);
+                        geom, freq, n_solve, t_cut, a_cut, obj);
                 end
             end            
         end
