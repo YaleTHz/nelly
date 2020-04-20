@@ -25,6 +25,7 @@ classdef  interface_node < handle & tf_node
             if type == -1
                amp = amp_prev*abs(rf(n_from, n_into));
                obj.amp = amp;
+               obj.tf = rf(n_from, n_into);
                if amp > a_cut
                    obj.child = layer_node(from, from-into, t_acc, amp,...
                        geom, freq, n_solve, t_cut, a_cut, obj);
@@ -33,7 +34,8 @@ classdef  interface_node < handle & tf_node
             
             if type == +1
                 amp = amp_prev*abs(tr(n_from, n_into));
-                obj.amp = amp;                
+                obj.amp = amp;   
+                obj.tf = tr(n_from, n_into);
                 if (amp > a_cut) && into < numel(geom)
                     obj.child = layer_node(into, into-from, t_acc, amp, ...
                         geom, freq, n_solve, t_cut, a_cut, obj);

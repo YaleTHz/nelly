@@ -22,9 +22,10 @@ classdef layer_node < handle & tf_node
             % calculate new time delay
             n = geom(index).n_func(freq, n_solve);
             d = geom(index).d;
-            dt = ((real(n)*d)/c)*1e12;
+            dt = ((real(n)*d)/node_constants.c)*1e12;
             t_acc = t_prev + dt;
             obj.t_acc = t_acc;
+            obj.tf = prop(freq, d, n);
             
             % calculate amplitude
             amp = amp_prev*abs(prop(freq, d, n));
@@ -48,7 +49,7 @@ classdef layer_node < handle & tf_node
                 end
             end            
         end
-        
+                
         function cs = children(obj)
             cs = [];
             if isa(obj.ref, 'interface_node')

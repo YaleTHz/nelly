@@ -2,9 +2,19 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
     properties
         parent
         id
+        tf
     end
     
     methods
+        % cumulative transfer function upon reaching this node
+        function t = tot_tf(obj)
+            if isa(obj.parent, 'tf_node')
+                t = obj.parent.tot_tf*obj.tf;
+            else
+                t = obj.tf;
+            end
+        end
+        
         function nds = all_nodes(obj)
             todo = [obj];
             nds = [];
