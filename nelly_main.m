@@ -29,8 +29,10 @@ delay = t_smp(find(A_smp == max(A_smp),1)) - t_ref(find(A_ref == max(A_ref),1));
 fprintf('Delay = %0.3f\n', delay)
 n_est = estimate_n(delay, input)
 
-func_smp = build_transfer_function(input.sample, 't_cut', t_cut);
-func_ref = build_transfer_function(input.reference, 't_cut', t_cut);
+% func_smp = build_transfer_function(input.sample, 't_cut', t_cut);
+% func_ref = build_transfer_function(input.reference, 't_cut', t_cut);
+func_smp = build_transfer_function_tree(input.sample, t_cut, 1e-4);
+func_ref = build_transfer_function_tree(input.reference, t_cut, 1e-4);
 func = @(freq, n_solve) func_smp(freq, n_solve)/func_ref(freq, n_solve);
 
 %% perform fitting

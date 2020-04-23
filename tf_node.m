@@ -52,6 +52,10 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
             em = lvs(inds == 1);
         end
         
+        function t = tot_tf_all_leaves(obj)
+            t = prod(arrayfun(@tot_tf, obj.emitted));
+        end
+        
         %% functions for displaying tree
         function vec = tree_vec(obj)
             nds = obj.all_nodes;

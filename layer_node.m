@@ -48,7 +48,7 @@ classdef layer_node < handle & tf_node
                 end
             end            
         end
-                
+
         function cs = children(obj)
             cs = [];
             if isa(obj.ref, 'interface_node')
