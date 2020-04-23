@@ -44,8 +44,8 @@ end
 k_mean = mean([min(freq) max(freq)])*2*pi*1e12/3e14;
 d_inds = find(strcmp({input.sample.n}, 'solve'));
 d_tot = sum(arrayfun(@(ii) input.sample(ii).d, d_inds));
-%n_prev = [real(n_est) log(mean(abs(tf_spec)))/(d_tot*k_mean)]
-n_prev = [3 0];
+n_prev = [real(n_est) log(mean(abs(tf_spec)))/(d_tot*k_mean)]
+%n_prev = [3 0];
 
 for ii = 1:numel(freq)
     %err = @(n) abs(func(freq(ii), complex(n(1), n(2)))-tf_spec(ii));

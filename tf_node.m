@@ -46,6 +46,10 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
                     if lvs(ii).into == obj.num_layers && lvs(ii).type == 1
                         inds(ii) = 1;
                     end
+                else
+                    if lvs(ii).index == obj.num_layers
+                        inds(ii) = 1;
+                    end
                 end
             end
             
@@ -53,7 +57,7 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
         end
         
         function t = tot_tf_all_leaves(obj)
-            t = prod(arrayfun(@tot_tf, obj.emitted));
+            t = sum(arrayfun(@tot_tf, obj.emitted));
         end
         
         %% functions for displaying tree

@@ -42,7 +42,7 @@ classdef layer_node < handle & tf_node
                 end
                 
                 % transmission
-                if into ~= 1
+                if into ~= 1 && index < numel(geom)
                     obj.trn = interface_node(index, into, +1, t_acc, amp,...
                         geom, freq, n_solve, t_cut, a_cut, obj);
                 end
