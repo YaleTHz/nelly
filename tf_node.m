@@ -60,6 +60,10 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
             t = sum(arrayfun(@tot_tf, obj.emitted));
         end
         
+        %% TODO
+        % returns the amount of time to add t t_cut
+        function t_prop
+        end
         %% functions for displaying tree
         function vec = tree_vec(obj)
             nds = obj.all_nodes;

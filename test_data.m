@@ -1,7 +1,7 @@
 % run this code from the follder containing the Nelly package
 % (should have subdirectory test_data)
 %% test si ref. (no reflections)
-expTest('test_data/si_ref_air.tim',...
+[f, tf_spec, freq] = expTest('test_data/si_ref_air.tim',...
         'test_data/si_ref_smp.tim',...
         'test_data/si_ref_input.json')
     
@@ -47,7 +47,7 @@ quest = 'Water refractive index: Does this look right (compared to lit value)?';
 lookright = questdlg(quest, 'Check results', 'Yes', 'No', 'No');
 assert(strcmp(lookright, 'Yes'), 'Water refractive index looked incorrect')
 
-function [fig] = expTest(ref_file, smp_file, input_file)
+function [fig, tf_spec, freq] = expTest(ref_file, smp_file, input_file)
 
 d_ref = importdata(ref_file);
 d_smp = importdata(smp_file);
