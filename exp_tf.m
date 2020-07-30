@@ -2,10 +2,6 @@ function [freq, tf_spec, freq_full, tf_full, spec_smp, spec_ref] = exp_tf(t_smp,
 %% check time ranges, and pad as necessary
 [t, A_smp_pad, A_ref_pad] = time_pad(t_smp, A_smp, t_ref, A_ref);
 
-figure()
-plot(t, A_smp_pad, '.-')
-hold on 
-plot(t, A_ref_pad, '.-')
 
 %remove offset to avoid artificial drop upon zero padding
 A_smp_pad = A_smp_pad - A_smp_pad(end);

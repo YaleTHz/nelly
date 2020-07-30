@@ -1,7 +1,7 @@
-% run this code from the follder containing the Nelly package
+% run this code from the folder containing the Nelly package
 % (should have subdirectory test_data)
 %% test si ref. (no reflections)
-[f, tf_spec, freq] = expTest('test_data/si_ref_air.tim',...
+[f, tf_spec, freq, func] = expTest('test_data/si_ref_air.tim',...
         'test_data/si_ref_smp.tim',...
         'test_data/si_ref_input.json')
     
@@ -21,7 +21,7 @@ close
 
 
 %% test cell (quartz-air-quartz)
-expTest('test_data/cell_ref_air.tim',...
+[f, tf_spec, freq, func] = expTest('test_data/cell_ref_air.tim',...
         'test_data/cell_ref_empty.tim',...
         'test_data/cell_ref_input.json')
 quest = 'Quartz refractive index: Does this look right(~2)?';
@@ -30,7 +30,7 @@ assert(strcmp(lookright, 'Yes'), 'Quartz refractive index looked incorrect')
 close
 
 %% test cell (quartz-water-quartz)
-expTest('test_data/cell_ref_empty.tim',...
+[f, tf_spec, freq, func] = expTest('test_data/cell_ref_empty.tim',...
         'test_data/cell_ref_filled.tim',...
         'test_data/cell_ref_filled_input.json');
 % get literature data
@@ -47,7 +47,7 @@ quest = 'Water refractive index: Does this look right (compared to lit value)?';
 lookright = questdlg(quest, 'Check results', 'Yes', 'No', 'No');
 assert(strcmp(lookright, 'Yes'), 'Water refractive index looked incorrect')
 
-function [fig, tf_spec, freq] = expTest(ref_file, smp_file, input_file)
+function [fig, tf_spec, freq, func] = expTest(ref_file, smp_file, input_file)
 
 d_ref = importdata(ref_file);
 d_smp = importdata(smp_file);

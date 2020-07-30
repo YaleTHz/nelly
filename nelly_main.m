@@ -25,7 +25,7 @@ end
 t_cut = min([t_cut_exp t_cut_wind])
 
 %% calculate t_cut for tree
-t_cut_exp_ref = t_ref(end) - t_ref(find(A_ref == max(A_ref)))
+t_cut_exp_ref = t_ref(end) - t_ref(find(A_ref == max(A_ref),1))
 % estimate of time it takes to pass through reference geometry
 ref_ns = arrayfun(@(x) x.n, input.reference)
 ref_ds = arrayfun(@(x) x.d, input.reference)
@@ -37,13 +37,19 @@ t_cut_tree = t_traverse_reference + t_cut_exp_ref
 
 delay = t_smp(find(A_smp == max(A_smp),1)) - t_ref(find(A_ref == max(A_ref),1));
 fprintf('Delay = %0.3f\n', delay)
-n_est = estimate_n(delay, input)
+n_est = estimate_n(delay, input);
 
-% func_smp = build_transfer_function(input.sample, 't_cut', t_cut);
-% func_ref = build_transfer_function(input.reference, 't_cut', t_cut);
-func_smp = build_transfer_function_tree(input.sample, t_cut_tree, 1e-4);
-func_ref = build_transfer_function_tree(input.reference, t_cut_tree, 1e-4);
+%  func_smp = build_transfer_function(input.sample, 't_cut', t_cut);
+%  func_ref = build_transfer_function(input.reference, 't_cut', t_cut);
+a_cut = 6e-5;
+fprintf('building transfer functions\n')
+func_smp = build_transfer_function_tree(input.sample, t_cut_tree, a_cut);
+fprintf('built sample transfer function...\n')
+func_ref = build_transfer_function_tree(input.reference, t_cut_tree, a_cut);
+fprintf('built reference transfer function...\n')
 func = @(freq, n_solve) func_smp(freq, n_solve)/func_ref(freq, n_solve);
+
+fprintf('transfer functions ready\n')
 
 %% perform fitting
 n_fit = zeros(2, numel(freq));
@@ -60,7 +66,8 @@ n_prev = [real(n_est) log(mean(abs(tf_spec)))/(d_tot*k_mean)]
 for ii = 1:numel(freq)
     %err = @(n) abs(func(freq(ii), complex(n(1), n(2)))-tf_spec(ii));
     err = @(n) n_error(func(freq(ii), complex(n(1), n(2))), tf_spec(ii));
-    opts = optimset();
+    opts = optimset('PlotFcns',@optimplotfval);
+    %opts = optimset();
     n_opt = fminsearch(err, n_prev, opts);
     n_prev = n_opt;
     n_fit(:,ii) = n_opt;

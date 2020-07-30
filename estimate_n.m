@@ -5,7 +5,6 @@
 % of the sample pulse relative to the reference
 
 function n_est = estimate_n(delay, input)
-input_new = input;
 freq = input.settings.freq_lo:input.settings.freq_step:input.settings.freq_hi;
 
 known_smp = input.sample(~strcmp({input.sample.n}, 'solve'));

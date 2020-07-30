@@ -56,14 +56,46 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
             em = lvs(inds == 1);
         end
         
+        % returns the reflection nodes in the path to the current node
+        function rs = reflections(obj)
+            curr_node = obj;
+            rs = [];
+            
+            while isa(curr_node, 'tf_node')
+                if isa(curr_node, 'interface_node')
+                    if curr_node.type == -1
+                        rs = [rs curr_node];
+                    end
+                end
+                curr_node = curr_node.parent;
+            end
+
+        end
+        
+        % determines if the path to this node includes cross-layer etalons
+        function t_or_f = crosslayer(obj)
+            refs = obj.reflections;
+            froms = arrayfun(@(x) x.from, refs);
+            t_or_f = numel(unique(froms)) > 1;
+        end
+        
+        function tf_bd = tot_tf_breakdown(obj)
+            emit = obj.emitted;
+            cross_layer_inds = arrayfun(@(x) x.crosslayer, emit);
+            no_ref_inds = arrayfun(@(x) numel(x.reflections) == 0,...
+                emit);
+            single_layer_inds = ~cross_layer_inds & ~no_ref_inds;
+            
+            tf_no_ref = sum(arrayfun(@tot_tf, emit(no_ref_inds)));
+            tf_one_layer = sum(arrayfun(@tot_tf, emit(single_layer_inds)));
+            tf_cross = sum(arrayfun(@tot_tf, emit(cross_layer_inds)));
+            tf_bd = [tf_no_ref, tf_one_layer, tf_cross];
+        end
+        
         function t = tot_tf_all_leaves(obj)
             t = sum(arrayfun(@tot_tf, obj.emitted));
         end
-        
-        %% TODO
-        % returns the amount of time to add t t_cut
-        function t_prop
-        end
+                
         %% functions for displaying tree
         function vec = tree_vec(obj)
             nds = obj.all_nodes;

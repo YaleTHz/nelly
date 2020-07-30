@@ -1,5 +1,7 @@
 function input = load_input(fname)
-input = jsondecode(fileread(fname));
+text = fileread(fname);
+no_comments = regexprep(text, '/.*?\n', '\n');
+input = jsondecode(no_comments);
 
 % file validation to come
 % add in defaults and log these additions to some output for transparency
@@ -26,6 +28,10 @@ end
             % static refractive index
             if isnumeric(mat.n)
                 geom_out(ii).n_func = @(w, n_solve) mat.n;
+                
+            % static refractive index (complex or other string)
+            elseif numel(str2num(mat.n)) > 0
+                geom_out(ii).n_func = @(w, n_solve) conj(str2num(mat.n));
                 
             % unknown refractive index (what we're solving for)
             elseif strcmp(mat.n, 'solve')
