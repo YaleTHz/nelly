@@ -1,6 +1,7 @@
 {
     "settings":
     {
+	"a_cut": 6e-5,
 	"freq_lo": 0.2,
 	"freq_step": 0.1,
 	"freq_hi": 2.2,

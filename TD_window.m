@@ -27,7 +27,8 @@ function amplitude_windowed = TD_window(time,amplitude,type,width)
         % Gaussian windowing
         window = exp(-((time-t_offset)/width).^2);
         amplitude_windowed = amplitude.*window;
-        status = 'Gaussian window applied to time-domain data!'
+        fprintf('Gaussian window applied to time-domain data!\n')
+        
     elseif strcmp(type,'square')
         % Square windowing
         N_pts = length(time);
@@ -37,11 +38,11 @@ function amplitude_windowed = TD_window(time,amplitude,type,width)
                 amplitude_windowed(i) = 0;
             end
         end
-        status = 'Square (top-hat) window applied to time-domain data!'
+        fprintf('Square (top-hat) window applied to time-domain data!\n')
+        
     else
         % No window applied for other input arguments for 'type'
         amplitude_windowed = amplitude;
-        status = 'No window applied to time-domain data!'
+        fprintf('No window applied to time-domain data!\n')
     end
-
 end
