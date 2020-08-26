@@ -1,5 +1,30 @@
 % run this code from the folder containing the Nelly package
 % (should have subdirectory test_data)
+
+%% test_data must be run from Nelly root directory
+fnames = dir;
+expected_files = {'test_data.m', 'test_data'};
+assert(numel(setdiff(expected_files, {fnames.name})) == 0, ...
+    'test_data must be run from Nelly root directory')
+
+addpath('utilities')
+
+%% test SnO2 photoconductivity
+d = 1; nn = 2.2;
+[f, tf_spec, freq, func] = testCond('sno2_photo_ref.tim',...
+    'sno2_photo_smp.tim', ...
+    'sno2_photo_input.json', nn)
+
+h = allchild(gca);
+plot(freq, real(tinkham(tf_spec, d, nn)),'--', 'color',...
+    h(2).Color, 'DisplayName', 'Thin film re')
+plot(freq, imag(tinkham(tf_spec, d, nn)),'--', 'color',...
+    h(1).Color, 'DisplayName', 'Thin film im')
+quest = 'SnO2 photoconductivity: Does this look right? (should mostly match thin film)';
+lookright = questdlg(quest, 'Check results', 'Yes', 'No', 'No');
+assert(strcmp(lookright, 'Yes'), 'SnO2 photoconductivity looked incorrect')
+close
+
 %% test si ref. (no reflections)
 [f, tf_spec, freq, func] = expTest('test_data/si_ref_air.tim',...
         'test_data/si_ref_smp.tim',...
@@ -59,18 +84,37 @@ t_smp= d_smp(:,1); A_smp = d_smp(:,2);
 
 fig = figure();
 subplot(1,2,1)
-plot(freq, n_fit(1,:))
+plot(freq, real(n_fit))
 hold on
 xlabel('Frequency (THz)')
 ylabel('n')
 
 subplot(1,2,2)
-plot(freq, -n_fit(2,:))
+plot(freq, imag(n_fit))
 hold on
 xlabel('Frequency (THz)')
 ylabel('\kappa')
 end
 
 
+function [fig, tf_spec, freq, func] = testCond(ref_file, smp_file, input_file, n_n)
+data_path = 'test_data/';
+d_ref = importdata([data_path ref_file]);
+d_smp = importdata([data_path smp_file]);
+t_ref= d_ref(:,1); A_ref = d_ref(:,2);
+t_smp= d_smp(:,1); A_smp = d_smp(:,2);
+A_smp = A_ref + A_smp;
+
+[freq, n_fit, freq_full, tf_full, tf_spec, tf_pred, func]...
+    = nelly_main([data_path input_file], t_smp, A_smp, t_ref, A_ref);
+cond = n_to_photocond(freq, n_fit, n_n);
+fig = figure();
+plot(freq, real(cond))
+hold on
+plot(freq, imag(cond))
+legend('re', 'im')
+xlabel('Frequency (THz)')
+ylabel('Conductivity (S/m)')
+end
 
 

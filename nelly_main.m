@@ -10,9 +10,35 @@ function [freq, n_fit, freq_full, tf_full, tf_spec, tf_pred, func, spec_smp, spe
 %            t_ref -- time points for the sample time domain trace
 %            A_ref -- amplitude points corresponding to t_ref
 %
-% Output: freq -- an array containing the frequencies (THz) at which the 
-%                 refractive index was calculated
-%         
+% Output: freq      -- an array containing the frequencies (THz) at which 
+%                      the refractive index was calculated
+%         n_fit     -- an array of complex values for the refractive index.
+%                      The ith element corresponds to the ith element in 
+%                      freq. For the imaginary part, positive values 
+%                      correspond to loss.
+%         freq_full -- an array containing a finer mesh of frequency points
+%                      directly from the padded fourier transform.
+%         tf_full   -- an array containing the transfer function
+%                      (E_smp/E_ref). The ith element corresponds to the
+%                      ith element in freq_full
+%         tf_spec   -- an array containing the transfer function 
+%                      (E_smp/E_ref) at a coarser spacing. The ith element
+%                      corresponds to the ith element of freq
+%         tf_pred   -- an array containing the predicted transfer function
+%                      based on the extracted refractive index values, for
+%                      use in assessing the accuracy of the extraction. The 
+%                      ith element corresponds to the ith element of freq
+%         func      -- an anonymous function which takes two arguments -- 
+%                      frequency (THz) and the value for the unknown 
+%                      refractive index--and returns the predicted transfer
+%                      function values at that frequency assuming that the 
+%                      unknown refractive index is the value given. 
+%         spec_smp  -- the spectrum for the sample pulse (i.e. E_smp(freq))
+%                      The ith element corresponds to the ith element of 
+%                      freq.
+%         spec_ref  -- the spectrum for the reference pulse (i.e. 
+%                      E_ref(freq)). The ith element corresponds to the ith
+%                      element of freq.
 
 %% error checking
 
@@ -89,9 +115,10 @@ for ii = 1:numel(freq)
     fprintf('%0.2f THz: n = %s\n', freq(ii), num2str(complex(n_opt(1), n_opt(2))))
 end
 
- tf_pred = arrayfun(@(ii) func(freq(ii), complex(n_fit(1,ii), n_fit(2, ii))), 1:numel(freq));
-end
 
+tf_pred = arrayfun(@(ii) func(freq(ii), complex(n_fit(1,ii), n_fit(2, ii))), 1:numel(freq));
+n_fit = n_fit(1,:) - 1i*n_fit(2,:);
+end 
 
 function [chi] = n_error(t1, t2)
 chi1 = (log(abs(t1)) - log(abs(t2)))^2;
