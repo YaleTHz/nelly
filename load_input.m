@@ -27,9 +27,13 @@ has_required_fields(input.settings.fft, {'windowing_type',...
                                          'windowing_width', 'padding'})
 
 
+assert(isstruct(input.sample), 'load_input:nonuniform_field', ...
+    'Each sample entries must have the same fields')
 input.sample = generate_n_funcs(input.sample);
 
 if isfield(input, 'reference')
+    assert(isstruct(input.reference), 'load_input:nonuniform_field',...
+        'Each sample entries must have the same fields')
     input.reference = generate_n_funcs(input.reference);
 else
     % when no reference is specified, defaults to a single air layer
@@ -73,7 +77,14 @@ end
                 
             % load values for refractive index 
             else
-                pwd
+                % load file from same directory as input file if possible
+                input_path = fileparts(fname);
+                if input_path
+                    fname_here = [input_path '/' mat.n];
+                    if isfile(fname_here)
+                        mat.n = fname_here;
+                    end
+                end
                 assert(isfile(mat.n),...
                     'Could not find refractive index file %s', mat.n)
                 dat = importdata(mat.n);
@@ -91,9 +102,9 @@ end
     
     % checks that the geometry entry has all the necessary fields
     function has_required_fields(struc, required_fields)
-        struc
         missing = setdiff(required_fields, fieldnames(struc));
         missing_str = sprintf('%s ', string(missing));
-        assert(isempty(missing), sprintf('%s is missing fields %s', fname, missing_str))
+        assert(isempty(missing), 'load_input:missing_field',...
+            sprintf('%s is missing fields %s', fname, missing_str))
     end
 end

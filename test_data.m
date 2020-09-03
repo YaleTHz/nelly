@@ -1,7 +1,5 @@
 % run this code from the folder containing the Nelly package
 % (should have subdirectory test_data)
-
-%% test_data must be run from Nelly root directory
 fnames = dir;
 expected_files = {'test_data.m', 'test_data'};
 assert(numel(setdiff(expected_files, {fnames.name})) == 0, ...
