@@ -1,4 +1,26 @@
 function [freq, tf_spec, freq_full, tf_full, spec_smp, spec_ref] = exp_tf(t_smp, A_smp, t_ref, A_ref, input)
+% EXP_TF    Fourier transform time-domain traces and calculate transfer
+% functions
+% 
+% [freq, tf_spec, freq_full, tf_full, spec_smp, spec_ref] = ...
+%          EXP_TF(t_smp, A_smp, t_ref, A_ref, input) Fourier transforms the
+% time domain traces (t_smp, A_smp) and (t_ref, A_ref). input is a struct
+% which follows the input file format, and specifies the frequency points,
+% zero padding, and windowing for the Fourier transform. 
+% OUTPUT
+% freq      -- the frequencies points corresponding to the transfer function
+% output tf_spec
+% tf_spec   -- the transfer function (E_smp(freq)/E_ref(freq)) at the
+% frequency points specified in freq
+% freq_full -- the full range of frequency points resulting from the
+% zero-padded time traces
+% tf_full   -- the transfer function (E_smp(freq)/E_ref(freq)) at the
+% frequency points specified in freq_full
+% spec_smp  -- the Fourier transform of the sample time trace (t_smp,
+% A_smp) at the frequencies specied in freq
+% spec_ref  -- the Fourier transform of the reference time trace (t_ref,
+% A_ref) at the frequencies specified in freq
+
 %% check time ranges, and pad as necessary
 [t, A_smp_pad, A_ref_pad] = time_pad(t_smp, A_smp, t_ref, A_ref);
 
@@ -27,6 +49,9 @@ freq = input.settings.freq_lo:input.settings.freq_step:input.settings.freq_hi;
 
 spec_smp_disc = disc(freq_full,spec_smp, freq);
 spec_ref_disc = disc(freq_full,spec_ref, freq);
+
+spec_smp = spec_smp_disc;
+spec_ref = spec_ref_disc;
 
 % calculate transfer function
 tf_spec = spec_smp_disc./spec_ref_disc;

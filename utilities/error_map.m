@@ -40,11 +40,11 @@ for ii = 1:numel(freq)
 
             FractionE = tf(ii);
             Etarget = t;
-            %chi1 = (log(abs(FractionE)) - log(abs(Etarget)))^2;
-            %chi2 = (angle(FractionE) - angle(Etarget))^2;
-            %data(kk, nn) = chi1+chi2;
+            chi1 = (log(abs(FractionE)) - log(abs(Etarget)))^2;
+            chi2 = (angle(FractionE) - angle(Etarget))^2;
+            data(kk, nn) = chi1+chi2;
             
-            data(kk, nn) = norm(FractionE-Etarget);
+            %data(kk, nn) = norm(FractionE-Etarget);
             
             %data(kk, nn) = norm(func(freq(ii), n_solve)-tf(ii));
             %data(kk, nn) = err_ang^2+err_amp^2;

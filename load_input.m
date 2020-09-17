@@ -1,7 +1,9 @@
 function input = load_input(fname)
-% LOAD_INPUT Generates a struct from the given augmented JSON file (JSON +
-% comments
+% LOAD_INPUT 
 % 
+% input = LOAD_INPUT(fname) Generates a struct input from the augmented 
+% JSON file (JSON + comments) given by fname
+%
 % INPUT
 % fname -- the filename of the file to load
 % 

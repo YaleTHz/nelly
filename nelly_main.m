@@ -110,6 +110,10 @@ for ii = 1:numel(freq)
     opts = optimset('PlotFcns',@optimplotfval);
     %opts = optimset();
     n_opt = fminsearch(err, n_prev, opts);
+%     freq(ii)
+%     n_opt
+%     tf_spec(ii)
+%     err(n_opt)
     n_prev = n_opt;
     n_fit(:,ii) = n_opt;
     fprintf('%0.2f THz: n = %s\n', freq(ii), num2str(complex(n_opt(1), n_opt(2))))
