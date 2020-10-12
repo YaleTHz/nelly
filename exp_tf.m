@@ -44,6 +44,7 @@ tf_full = spec_smp./spec_ref;
 spec_smp = spec_smp(freq_full <= input.settings.freq_hi);
 spec_ref = spec_ref(freq_full <= input.settings.freq_hi);
 freq_full = freq_full(freq_full <= input.settings.freq_hi);
+tf_full = tf_full(freq_full <= input.settings.freq_hi);
 
 freq = input.settings.freq_lo:input.settings.freq_step:input.settings.freq_hi;
 

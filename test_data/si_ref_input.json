@@ -6,7 +6,7 @@
 	"freq_step": 0.1,
 	"freq_hi": 2.2,
 	"fft" : {
-	    "windowing_type": "gauss",
+	    "windowing_type": "none",
 	    "windowing_width" : 2,
 	    "padding" : 16
 	}
