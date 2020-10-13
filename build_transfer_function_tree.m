@@ -13,5 +13,5 @@ else
     tf_func = @(freq, n_solve) layer_node(index, dir, t_prev, amp_prev,...
                 geom, freq, n_solve, t_cut, a_cut, parent).tot_tf_all_leaves;
     tree_func = @(freq, n_solve) layer_node(index, dir, t_prev, amp_prev,...
-                geom, freq, n_solve, t_cut, a_cut, parent).tot_tf_all_leaves;
+                geom, freq, n_solve, t_cut, a_cut, parent);
 end
