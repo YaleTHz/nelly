@@ -1,5 +1,5 @@
 function [freq, n_fit, freq_full, tf_full, tf_spec, tf_pred, func, spec_smp, spec_ref]...
-    = nelly_main(input, t_smp, A_smp, t_ref, A_ref)
+    = nelly_main(input, t_smp, A_smp, t_ref, A_ref, varargin)
 % NELLY_MAIN Runs Nelly data processing code
 %
 % Arguments: input -- gives input geometry and other settings for the 
@@ -9,7 +9,7 @@ function [freq, n_fit, freq_full, tf_full, tf_spec, tf_pred, func, spec_smp, spe
 %            A_smp -- amplitude points corresponding to t_smp
 %            t_ref -- time points for the sample time domain trace
 %            A_ref -- amplitude points corresponding to t_ref
-%
+%            varargin -- additional arguments 
 % Output: freq      -- an array containing the frequencies (THz) at which 
 %                      the refractive index was calculated
 %         n_fit     -- an array of complex values for the refractive index.
@@ -47,6 +47,12 @@ if ~ isstruct(input)
     input = load_input(input);
 end
 
+% process additional arguments
+assert(mod(numel(varargin),2) == 0, 'Extra parameters come in pairs')
+extra_args = struct;
+for ii = 1:2:numel(varargin)
+    extra_args.(varargin{ii}) = varargin{ii+1};
+end
 
 % fourier transform 
 [freq, tf_spec, freq_full, tf_full, spec_smp, spec_ref] = exp_tf(t_smp, A_smp, t_ref, A_ref, input);
@@ -110,10 +116,7 @@ for ii = 1:numel(freq)
     opts = optimset('PlotFcns',@optimplotfval);
     %opts = optimset();
     n_opt = fminsearch(err, n_prev, opts);
-%     freq(ii)
-%     n_opt
-%     tf_spec(ii)
-%     err(n_opt)
+
     n_prev = n_opt;
     n_fit(:,ii) = n_opt;
     fprintf('%0.2f THz: n = %s\n', freq(ii), num2str(complex(n_opt(1), n_opt(2))))
@@ -126,6 +129,6 @@ end
 
 function [chi] = n_error(t1, t2)
 chi1 = (log(abs(t1)) - log(abs(t2)))^2;
-chi2 = (angle(t1) - angle(t2))^2;
+chi2 = (mod(angle(t1),2*pi) - mod(angle(t2),2*pi))^2;
 chi = chi1+chi2;
 end
