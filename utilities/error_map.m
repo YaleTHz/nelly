@@ -33,26 +33,26 @@ for ii = 1:numel(freq)
     data = zeros(numel(k), numel(n));
     for nn = 1:numel(n)
         for kk = 1:numel(k)
-            %fprintf('(%0.2f, %0.2f)\n', n(nn), k(kk))
             n_solve = complex(n(nn), -k(kk));
             
             t = func(freq(ii), n_solve);
 
-            FractionE = tf(ii);
-            Etarget = t;
-            chi1 = (log(abs(FractionE)) - log(abs(Etarget)))^2;
-            chi2 = (mod(angle(FractionE),2*pi) - mod(angle(Etarget),2*pi))^2;
-            data(kk, nn) = chi1+chi2;
-            
-            %data(kk, nn) = norm(FractionE-Etarget);
-            
-            %data(kk, nn) = norm(func(freq(ii), n_solve)-tf(ii));
-            %data(kk, nn) = err_ang^2+err_amp^2;
+            t2 = tf(ii);
+            t1 = t;
+            data(kk, nn) = n_error(t1, t2);
         end
         waitbar((ii*numel(n) + nn)/tot)
     end
     map.data = data;
     maps{ii} = map;
+end
+
+function [chi] = n_error(t1, t2)
+chi1 = (log(abs(t1)) - log(abs(t2)))^2;
+d = angle(t1) - angle(t2);
+chi2 = (mod(d + pi, 2*pi) - pi)^2;
+chi = chi1+chi2;
+end
 end
 
     

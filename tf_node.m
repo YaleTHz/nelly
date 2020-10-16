@@ -92,6 +92,21 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
             tf_bd = [tf_no_ref, tf_one_layer, tf_cross];
         end
         
+        function no_ref = tot_tf_no_ref(obj)
+            bd = obj.tot_tf_breakdown;
+            no_ref = bd(1);
+        end
+        
+        function one_layer = tot_tf_one_layer(obj)
+            bd = obj.tot_tf_breakdown;
+            one_layer = bd(1) + bd(2);
+        end
+        
+        function cross_layer = tot_tf_cross_layer(obj)
+            bd = obj.tot_tf_breakdown;
+            cross_layer = bd(1) + bd(2) + bd(3);
+        end
+        
         function t = tot_tf_all_leaves(obj)
             t = sum(arrayfun(@tot_tf, obj.emitted));
         end

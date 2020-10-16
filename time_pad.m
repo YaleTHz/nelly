@@ -25,7 +25,7 @@ if abs((dt_ref-dt_smp)/min([dt_ref dt_smp])) > 0.01
 end
 
 % check for differing time ranges
-if min(t_ref) ~= min(t_smp)
+if (min(t_ref) ~= min(t_smp)) || (max(t_ref) ~= max(t_smp))
     warning('The provided time traces have different time ranges; applying padding in time_pad')
 end
 

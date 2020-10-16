@@ -75,7 +75,8 @@ t_cut = min([t_cut_exp t_cut_wind]);
 
 % calculate t_cut for tree
 
-t_cut_exp_ref = t_ref(end) - t_ref(find(A_ref == max(A_ref),1));
+end_time = max([t_smp(:); t_ref(:)]);
+t_cut_exp_ref = end_time - t_ref(find(A_ref == max(A_ref),1));
 t_cut_exp_ref = min([t_cut_exp_ref t_cut_wind]);
 
 % estimate of time it takes to pass through reference geometry
@@ -101,11 +102,11 @@ d_inds = find(strcmp({input.sample.n}, 'solve'));
 d_tot = sum(arrayfun(@(ii) input.sample(ii).d, d_inds));
 n_prev = [real(n_est) log(mean(abs(tf_spec)))/(d_tot*k_mean)];
 
-%  func_smp = build_transfer_function(input.sample, 't_cut', t_cut);
-%  func_ref = build_transfer_function(input.reference, 't_cut', t_cut);
 a_cut = input.settings.a_cut;
-func_smp = build_transfer_function_tree(input.sample, t_cut_tree, a_cut);
-func_ref = build_transfer_function_tree(input.reference, t_cut_tree, a_cut);
+func_smp = build_transfer_function_tree(input.sample, t_cut_tree, a_cut,...
+    varargin{:});
+func_ref = build_transfer_function_tree(input.reference, t_cut_tree, a_cut,...
+    varargin{:});
 func = @(freq, n_solve) func_smp(freq, n_solve)/func_ref(freq, n_solve);
 
 %% perform fitting
@@ -129,6 +130,7 @@ end
 
 function [chi] = n_error(t1, t2)
 chi1 = (log(abs(t1)) - log(abs(t2)))^2;
-chi2 = (mod(angle(t1),2*pi) - mod(angle(t2),2*pi))^2;
+d = angle(t1) - angle(t2);
+chi2 = (mod(d + pi, 2*pi) - pi)^2;
 chi = chi1+chi2;
 end
