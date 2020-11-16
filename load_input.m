@@ -1,4 +1,4 @@
-function input = load_input(fname)
+function input = load_input(source)
 % LOAD_INPUT 
 % 
 % input = LOAD_INPUT(fname) Generates a struct input from the augmented 
@@ -12,9 +12,18 @@ function input = load_input(fname)
 %          file. For example if the file has {"settings": {"a_cut": ... } }
 %          a_cut can be found with input.settings.a_cut
 
-text = fileread(fname);
-no_comments = regexprep(text, '/.*?\n', '\n');
-input = jsondecode(no_comments);
+
+assert(ischar(source) || isstruct(source), ...
+    'input must either be a filename or a struct')
+if ischar(source)
+    text = fileread(source);
+    no_comments = regexprep(text, '/.*?\n', '\n');
+    input = jsondecode(no_comments);
+else
+    input = source;
+end
+    
+   
 
 %%  error checking
 % check for required fields (top level)
@@ -33,6 +42,7 @@ assert(isstruct(input.sample), 'load_input:nonuniform_field', ...
     'Each sample entries must have the same fields')
 input.sample = generate_n_funcs(input.sample);
 
+%% handle reference geometry
 if isfield(input, 'reference')
     assert(isstruct(input.reference), 'load_input:nonuniform_field',...
         'Each sample entries must have the same fields')
@@ -46,6 +56,23 @@ else
         'n_func', @(freq, n_solve) 1,...
         'name', 'air')];
 end
+
+%% match thicknesses
+d_smp = sum(arrayfun(@(x) x.d, input.sample));
+d_ref = sum(arrayfun(@(x) x.d, input.reference));
+
+if d_smp > d_ref
+    pad = input.sample(end);
+    pad.d = d_smp - d_ref;
+    input.reference = [input.reference(1:end-1); pad; input.reference(end)];
+end
+
+if d_ref > d_smp
+    pad = input.reference(end);
+    pad.d = d_ref - d_smp;
+    input.sample = [input.sample(1:end-1); pad; input.sample(end)];
+end
+    
 
     % takes in a geometry--i.e. a struct containing fields n and d--and 
     % returns the same struct with another field n_func. n_func contains
@@ -61,6 +88,13 @@ end
             
             % check for required entries
             has_required_fields(mat, {'n', 'd'})
+
+            % skip if n_func is already present
+            if isfield(geom_out(ii), 'n_func')
+                if isa(geom_out(ii).n_func, 'function_handle')
+                    continue
+                end
+            end
             
             % make refractive index retrieval function
             assert(isnumeric(mat.n) | ischar(mat.n), 'refractive index must be number or string')
@@ -80,7 +114,10 @@ end
             % load values for refractive index 
             else
                 % load file from same directory as input file if possible
-                input_path = fileparts(fname);
+                input_path = false;
+                if ischar(source)
+                    input_path = fileparts(source);
+                end
                 if input_path
                     fname_here = [input_path '/' mat.n];
                     if isfile(fname_here)
@@ -107,6 +144,6 @@ end
         missing = setdiff(required_fields, fieldnames(struc));
         missing_str = sprintf('%s ', string(missing));
         assert(isempty(missing), 'load_input:missing_field',...
-            sprintf('%s is missing fields %s', fname, missing_str))
+            sprintf('%input is missing fields %s', missing_str))
     end
 end

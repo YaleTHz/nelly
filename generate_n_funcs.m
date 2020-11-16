@@ -15,7 +15,6 @@ function [geom_out] = generate_n_funcs(geom)
                 
        % load values for refractive index 
        else
-           pwd
            assert(isfile(mat.n),...
                'Could not find refractive index file %s', mat.n)
            dat = importdata(mat.n);

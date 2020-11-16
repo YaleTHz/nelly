@@ -34,3 +34,46 @@ function load_csv_test(testCase)
     inp = load_input([path 'csv_load_test.json']);
     assert(inp.sample(2).n_func(1.5) == 1.5 - 2*1i)
 end
+
+%% pads reference when sample is thicker
+function thickness_padding_reference_test(testCase)
+    path = 'testing/load_input/';
+    inp = load_input([path 'pad_ref.json']);
+    d_smp = sum(arrayfun(@(x) x.d, inp.sample));
+    d_ref = sum(arrayfun(@(x) x.d, inp.reference));
+    
+    % thicknesses match
+    assert(d_smp == d_ref)
+    
+    % padded with correct layer
+    last = inp.reference(end);
+    pad = inp.reference(end - 1);
+    
+    assert(last.n == pad.n);
+end
+
+%% pads sample when reference is thicker
+function thickness_padding_sample_test(testCase)
+    path = 'testing/load_input/';
+    inp = load_input([path 'pad_smp.json']);
+    d_smp = sum(arrayfun(@(x) x.d, inp.sample));
+    d_ref = sum(arrayfun(@(x) x.d, inp.reference));
+    
+    % thicknesses match
+    assert(d_smp == d_ref)
+    
+    % padded with correct layer
+    last = inp.sample(end);
+    pad = inp.sample(end - 1);
+    
+    assert(last.n == pad.n);
+end
+
+%% allows loading of structs with functions
+function load_struct_func_test(testCase)
+    path = 'testing/load_input/';
+    inp = load_input([path 'pad_smp.json']);
+    inp.reference(1).n_func = @(f, n) 4;
+    inp_reloaded = load_input(inp);
+    assert(inp_reloaded.reference(1).n_func(0,0) == 4)
+end

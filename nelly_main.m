@@ -43,15 +43,13 @@ function [freq, n_fit, freq_full, tf_full, tf_spec, tf_pred, func, spec_smp, spe
 %% error checking
 
 %% load and process data and input parameters
-if ~ isstruct(input)
-    input = load_input(input);
-end
+input = load_input(input);
 
 % process additional arguments
 assert(mod(numel(varargin),2) == 0, 'Extra parameters come in pairs')
 extra_args = struct;
 for ii = 1:2:numel(varargin)
-    extra_args.(varargin{ii}) = varargin{ii+1};
+    extra_args.(upper(varargin{ii})) = varargin{ii+1};
 end
 
 % fourier transform 
@@ -114,8 +112,12 @@ n_fit = zeros(2, numel(freq));
 
 for ii = 1:numel(freq)
     err = @(n) n_error(func(freq(ii), complex(n(1), n(2))), tf_spec(ii));
-    opts = optimset('PlotFcns',@optimplotfval);
-    %opts = optimset();
+    opts = optimset();
+    if isfield(extra_args, 'SHOWOPTIMIZATION')
+        if extra_args.SHOWOPTIMIZATION
+            opts = optimset('PlotFcns',@optimplotfval);
+        end
+    end
     n_opt = fminsearch(err, n_prev, opts);
 
     n_prev = n_opt;
