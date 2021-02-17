@@ -57,5 +57,27 @@ classdef  interface_node < handle & tf_node
             end
             s = sprintf('%d -> %d (%s)', obj.from, obj.into, type_s);
         end
+        
+        function s = dot_label(obj, em)
+            type_s = 'r';
+            color = '#ffb380';
+            if obj.type > 0
+                type_s = 't';
+                color = '#ff9999';
+            end
+            fcolor = [color '78'];
+            
+            if em
+                color = '#000000';
+            end
+            
+            pen_width = '1.0';
+            if em
+                pen_width = '4.0';
+            end
+            
+            s = sprintf('%d[label=<%s<SUB>%d%d</SUB>>, style=filled, color="%s", fillcolor="%s", penwidth=%s]\n', ...
+                obj.id, type_s, obj.from, obj.into, color, fcolor, pen_width);
+        end
     end
 end

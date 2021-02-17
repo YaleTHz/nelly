@@ -73,6 +73,8 @@ if d_ref > d_smp
     input.sample = [input.sample(1:end-1); pad; input.sample(end)];
 end
     
+[input.sample.n]
+[input.reference.n]
 
     % takes in a geometry--i.e. a struct containing fields n and d--and 
     % returns the same struct with another field n_func. n_func contains

@@ -63,6 +63,15 @@ classdef layer_node < handle & tf_node
         function s = to_s(obj)
             s = num2str(obj.index);
         end
+        
+        function s = dot_label(obj, em)
+            color = '"#9999ff"';
+            if em
+                color = '"#000000", penwidth=4.0';
+            end
+            s = sprintf('%d[label=<P<SUB>%d</SUB>>, style=filled, color=%s, fillcolor="#9999ff78"]\n',...
+                obj.id, obj.index, color);
+        end
     end
 end
         

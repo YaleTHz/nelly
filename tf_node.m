@@ -16,6 +16,15 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
             end
         end
         
+        function pars = parents(obj)
+            pars = [];
+            p = obj.parent;
+            while isa(p, 'tf_node')
+                pars = [pars p.id];
+                p = p.parent;
+            end
+        end
+        
         function nds = all_nodes(obj)
             todo = [obj];
             nds = [];
@@ -166,8 +175,45 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
                 plot(x(ii), y(ii), 'ok',...
                     'markersize', 30*abs(nds(ii).tot_tf),...
                     'markerfacecolor', [0.5 0.5 0.5])
+            end           
+        end
+        
+        function dot(obj)
+            fprintf('graph Tree {\n')
+            
+            nodes = obj.all_nodes();
+            for ii = 1:numel(nodes)
+                nodes(ii).id = ii;
             end
-                            
+            em_pars = [];
+            
+            for n = obj.emitted()
+                em_pars = [em_pars n.id n.parents];
+            end
+            
+            em_pars = unique(em_pars);
+            
+            for ii = 1:numel(nodes)
+                node = nodes(ii);
+                
+                % output node label
+                fprintf(node.dot_label(ismember(node.id, em_pars)))
+                
+                %output node connections
+                cs = node.children();
+                for jj = 1:numel(cs)
+                    % is this node part of an emitted path?
+                    em = ismember(cs(jj).id, em_pars);
+                    
+                    color = '';
+                    if em
+                        color = '[color="#000000", penwidth=4.0]';
+                    end
+                    fprintf('%d -- %d %s\n', node.id, cs(jj).id, color)
+                end
+            end
+            
+            fprintf('}\n')
         end
     end
 end
