@@ -78,7 +78,7 @@ t_cut_exp_ref = end_time - t_ref(find(A_ref == max(A_ref),1));
 t_cut_exp_ref = min([t_cut_exp_ref t_cut_wind]);
 
 % estimate of time it takes to pass through reference geometry
-ref_ns = arrayfun(@(x) x.n, input.reference);
+ref_ns = arrayfun(@(x) x.n_func(1), input.reference);
 ref_ds = arrayfun(@(x) x.d, input.reference);
 ref_nd = dot(ref_ns, ref_ds);
 
@@ -101,6 +101,8 @@ d_tot = sum(arrayfun(@(ii) input.sample(ii).d, d_inds));
 n_prev = [real(n_est) log(mean(abs(tf_spec)))/(d_tot*k_mean)];
 
 a_cut = input.settings.a_cut;
+
+% build transfer functions
 func_smp = build_transfer_function_tree(input.sample, t_cut_tree, a_cut,...
     varargin{:});
 func_ref = build_transfer_function_tree(input.reference, t_cut_tree, a_cut,...
