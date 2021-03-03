@@ -1,14 +1,14 @@
 # Overview
 
-*Nelly* is a package for numerically extracting the complex refractive indices of materials from time-domain THz (TDS) and time-resolved THz (TRTS) data. Typically, extracting the refractive index is done by making one of several assumptions about the material (e.g. assuming that only absorptions contribute to the signal). These assumptions limit the accuracy of the results, and restrict analysis to certain types of samples. *Nelly*, on the other hand, does not require any of these assumptions. Thus it can process data from a wide range of sample geometries accurately. 
+*Nelly* is a package for numerically extracting the complex refractive indices of materials from time-domain THz (TDS) and time-resolved THz (TRTS) data. Typically, extracting the refractive index is done by making one of several assumptions about the material (e.g. assuming that only absorptions contribute to the signal). These assumptions limit the accuracy of the results, and restrict analysis to certain types of samples. *Nelly*, on the other hand, does not require any of these assumptions. Thus it can process data from a wide range of sample geometries accurately.
 
-TDS and TRTS measurements typically consist of measuring a terahertz pulse after it has passed through a particular sample, and comparing this with a terahertz pulse that has passed through a known sample. The picture below depicts this general setup, with a THz pulse passing through a layered reference in which all the layers are well characterized, as well as through a sample which contains a layer whose refractive index we'd like to measure.![Fig. 1](docs/fig01.png) 
+TDS and TRTS datasets typically consist of two measurements: (1) a terahertz pulse after it has passed through a particular sample, and (2) a terahertz pulse that has passed through a know reference. The picture below depicts this general setup, with a THz pulse passing through a layered reference in which all the layers are well characterized, as well as through a sample which contains a layer whose refractive index we'd like to measure.![Fig. 1](docs/fig01.png) 
 
-The general principle of these measurements is that we can relate the differences between the sample and reference pulse with the refractive index of the unknown layer. Specifically, we can Fourier transform the pulses and and see how the amplitude and phase of each Fourier component changes when passing through the sample (compared with the reference). We can express this as  $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$, the complex ratio of the sample and reference. This change in amplitude and phase can be related to each of the layer's **refractive index** and **thickness** as follows
+The general principle of these measurements is that we can relate the differences between the sample and reference pulse with the refractive index of the unknown layer. Specifically, we can Fourier transform the pulses and and see how the amplitude and phase of each Fourier component changes when passing through the sample (compared with the reference). We can express this as  $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$, the complex ratio of the sample and reference. This change in amplitude and phase can be related to each of the layer's **refractive index** and **thickness**  of each layer as follows
 
-> $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega) = TF(\omega, \tilde{n}_\text{solve}, \tilde{n}_1, \tilde{n}_2,...)$
+> $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega) = TF(\omega, \tilde{n}_\text{solve}, \tilde{n}_1, d_1, \tilde{n}_2,...)$
 
-where $n_\text{solve}$ is the unknown refractive index and the transfer function $TF_s(\omega, \tilde{n}_\text{solve})$ is a function consisting of Fresnel coefficients and propagation terms.[^1] The complex ratio $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$ is measured experimentally, so once we have the transfer function, we can go frequency-by-frequency and find the refractive index $\tilde{n}_\text{solve}$ which best reproduces the experimental value. 
+where $n_\text{solve}$ is the unknown refractive index and the transfer function $TF(\omega, \tilde{n}_\text{solve})$ is a function consisting of Fresnel coefficients and propagation terms.[^1] This can be written more succinctly as $TF(\omega, \tilde{n}_\text{solve})$ since all $n_i$ except $n_{solve}$ are known, as are all $d_i$. The complex ratio $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$ is measured experimentally, so once we have the transfer function, we can go frequency-by-frequency and find the refractive index $\tilde{n}_\text{solve}$ which best reproduces the experimental value---that is, what value of $\tilde{n}_{solve}$ brings $TF(\omega, \tilde{n}_{solve})$  closest to the measured value of $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$
 
 With this in mind, we have the following tasks:
 
@@ -115,8 +115,6 @@ The main interface to the program is the `nelly_main` function, which is run as 
 
 See below for a more detailed explanation of the input and output arguments. Briefly, `input` is the path name to the input file,  `t_smp`  and `A_smp` are time points and amplitudes for the sample, and `t_ref` and `A_ref` are the same for the reference.
 
-Before running, you'll also need to install the MATLAB Optimization Toolbox.
-
 # Functions
 
 This section describes each of the functions in the package. For all functions, a description of the expected input is given. For important ("Primary") functions, a fuller description of the function is given as well. 
@@ -129,15 +127,15 @@ This section describes each of the functions in the package. For all functions, 
       1. Load settings and geometry from the input file. 
       2. Process experimental data: pad, Fourier transform, and calculated experimental transfer function
    2. **Build transfer function** This is simply a matter of taking the geometries loaded from the input file and handing them off to the `build_transfer_function_tree` function.
-   3. **Fitting** Loops through the frequencies specified in the input file and finds the refractive index $n$ that best reproduces the experimental transfer function at that frequency. This optimization is done with MATLAB's `fminsearch` function from the Optimization Toolbox.
+   3. **Fitting** Loops through the frequencies specified in the input file and finds the refractive index $n$ that best reproduces the experimental transfer function at that frequency. This optimization is done with MATLAB's `fminsearch` function.
 
    **Arguments**
 
-   * `input` : gives input geometry and other settings for the calculation. This can either be a filename for a JSON file or a struct containing the same information. 
-   * `t_smp` : time points for the sample time domain trace
-   * `A_smp` : amplitude points corresponding to `t_smp` 
-   * `t_ref` : time points for the reference time domain trace
-   * `A_ref` : amplitude points corresponding to `t_ref`
+   * `input` : gives input geometry and other settings for the calculation. This can either be a filename for a JSON file (see specification above) or a struct containing the same information. 
+   * `t_smp` : an array containing time points for the sample time domain trace
+   * `A_smp` : an array containing amplitude points corresponding to `t_smp` 
+   * `t_ref` : an array containing time points for the reference time domain trace
+   * `A_ref` : an array containing amplitude points corresponding to `t_ref`
 
    **Output** 
 

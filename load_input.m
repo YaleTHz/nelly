@@ -144,7 +144,7 @@ end
     % checks that the geometry entry has all the necessary fields
     function has_required_fields(struc, required_fields)
         missing = setdiff(required_fields, fieldnames(struc));
-        missing_str = sprintf('%s ', string(missing));
+        missing_str = sprintf('%s ', missing{:});
         assert(isempty(missing), 'load_input:missing_field',...
             sprintf('%input is missing fields %s', missing_str))
     end
