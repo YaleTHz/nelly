@@ -1,8 +1,8 @@
 # Overview
 
-*Nelly* is a package for numerically extracting the complex refractive indices of materials from time-domain THz (TDS) and time-resolved THz (TRTS) data. Typically, extracting the refractive index is done by making one of several assumptions about the material (e.g. assuming that only absorptions contribute to the signal). These assumptions limit the accuracy of the results, and restrict analysis to certain types of samples. *Nelly*, on the other hand, does not require any of these assumptions. Thus it can process data from a wide range of sample geometries accurately.
+*Nelly* is a package for numerically extracting the complex refractive indices of materials from time-domain THz (TDS) and time-resolved THz (TRTS) data. Typically, extracting the refractive index is done by making one of several assumptions about the material (e.g. assuming that only absorptions contribute to the signal). These assumptions limit the accuracy of the results, and restrict analysis to certain types of samples. *Nelly*, on the other hand, does not require any of these assumptions and can process data from a wide range of sample geometries accurately.
 
-TDS and TRTS datasets typically consist of two measurements: (1) a terahertz pulse after it has passed through a particular sample, and (2) a terahertz pulse that has passed through a know reference. The picture below depicts this general setup, with a THz pulse passing through a layered reference in which all the layers are well characterized, as well as through a sample which contains a layer whose refractive index we'd like to measure.![Fig. 1](docs/fig01.png) 
+TDS and TRTS datasets typically consist of two measurements: (1) a terahertz pulse that has passed through a particular sample, and (2) a terahertz pulse that has passed through a know reference. The picture below depicts this general setup, with a THz pulse passing through a layered reference in which all the layers are well characterized, as well as through a sample which contains a layer whose refractive index we'd like to measure.![Fig. 1](docs/fig01.png) 
 
 The general principle of these measurements is that we can relate the differences between the sample and reference pulse with the refractive index of the unknown layer. Specifically, we can Fourier transform the pulses and and see how the amplitude and phase of each Fourier component changes when passing through the sample (compared with the reference). We can express this as  $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$, the complex ratio of the sample and reference. This change in amplitude and phase can be related to each of the layer's **refractive index** and **thickness**  of each layer as follows
 
@@ -13,11 +13,23 @@ where $n_\text{solve}$ is the unknown refractive index and the transfer function
 With this in mind, we have the following tasks:
 
 1. For a given geometry, construct the appropriate transfer function
-2. Loop through a range of frequencies and fit the refractive index to the experimental value at that frequency. 
+2. Loop through a range of frequencies and fit the refractive index to the experimental value at each frequency. 
 
 This is the general procedure that Nelly follows when `nelly_main` is called.
 
 [^1]: More details can be found in a forthcoming paper and this [TDS tutorial by Neu et. al.](https://aip.scitation.org/doi/full/10.1063/1.5047659)  
+
+
+
+# Quick Start
+
+The quickest way to get started is to start with the script and input file in the `sample_files` folder and edit them to fit your needs.
+
+1.  **Editing the script**
+   In `sample_files/sample_script` replace the data file paths (e.g. `'../test_data/cell_ref_empty.tim'`) with paths for your data files. The built in `importdata` method should work for most character-delimited data files, but any import method works as long as you end up with MATLAB vector for the time points, and a corresponding vector with the amplitudes for each time.
+2. **Editing the input file**
+   The input file specifies the geometry of the sample as well as some parameters for the Fourier transform. In `sample_files/sample_input.json`, change the parameters and geometry as necessary to match your sample and reference. Each parameter is explained in comments as is the format for the geometry specification.
+
 
 # Input File
 
