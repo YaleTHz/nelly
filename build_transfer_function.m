@@ -22,7 +22,7 @@ else
 end
 
 %% propagation part of transfer function
-c = physconst('LightSpeed')*1e6; %um/s
+c = 299792458*1e6; %um/s
 prop = @(freq, d, n) exp(-1i*(2*pi*freq*1e12/c)*n*d);
 rf = @(n1, n2) (n1-n2)/(n1+n2);
 %tr = @(n1, n2) 2*n1/(n1+n2);

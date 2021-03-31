@@ -19,10 +19,7 @@ dn_ref = sum(arrayfun(@(layer) mean_n(layer)*layer.d, input.reference));
 d_unknown = sum([unknown_smp.d]);
 
 % calculate delay between reference and sample
-c = physconst('LightSpeed')*1e6; %um/s
+c = 299792458*1e6; %um/s
 
 % final calculation for n estimate
 n_est = (delay*c*1e-12+dn_ref-dn_smp_known)/d_unknown;
-
-
-

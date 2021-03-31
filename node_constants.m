@@ -2,7 +2,7 @@ classdef node_constants
     properties (Constant)
         rf = @(n1, n2) (n1-n2)/(n1+n2);
         tr = @(n1, n2) 2*n1/(n1+n2);
-        c = physconst('LightSpeed')*1e6; %um/s
+        c = 299792458*1e6; %um/s
     end
     
     methods(Static)
