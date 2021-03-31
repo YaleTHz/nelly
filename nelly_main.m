@@ -120,11 +120,20 @@ for ii = 1:numel(freq)
             opts = optimset('PlotFcns',@optimplotfval);
         end
     end
+    
+    if isfield(extra_args, 'PROGRESS_BAR')
+       extra_args.PROGRESS_BAR.Value = ii/numel(freq);
+       pause(0.1)
+    end
     n_opt = fminsearch(err, n_prev, opts);
 
     n_prev = n_opt;
     n_fit(:,ii) = n_opt;
     fprintf('%0.2f THz: n = %s\n', freq(ii), num2str(complex(n_opt(1), n_opt(2))))
+end
+
+if isfield(extra_args, 'PROGRESS_BAR')
+    close(extra_args.PROGRESS_BAR)
 end
 
 
