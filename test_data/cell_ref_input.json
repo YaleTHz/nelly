@@ -3,7 +3,7 @@
     {
 	"a_cut": 3e-5,
 	"freq_lo": 0.2,
-	"freq_step": 0.01,
+	"freq_step": 0.1,
 	"freq_hi": 2.2,
 	"fft" : {
 	    "windowing_type": "none",
