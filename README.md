@@ -2,22 +2,22 @@
 
 # Overview
 
-*Nelly* is a package for numerically extracting the complex refractive indices of materials from time-domain THz (TDS) and time-resolved THz (TRTS) data. Typically, extracting the refractive index is done by making one of several assumptions about the material (e.g. assuming that only absorptions contribute to the signal). These assumptions limit the accuracy of the results, and restrict analysis to certain types of samples. *Nelly*, on the other hand, does not require any of these assumptions and can process data from a wide range of sample geometries accurately.
+*Nelly* is a package for numerically extracting the complex refractive indices of materials from time-domain terahertz (THz) spectroscopy (TDS) and time-resolved THz spectroscopy (TRTS) data. Typically, extracting the refractive index is accomplished by making one of several assumptions about the material (e.g. assuming that only absorptions contribute to the signal). These assumptions limit the accuracy of the results, and restrict analysis to certain types of samples. *Nelly*, on the other hand, does not require any of these assumptions and can process data from a wide range of sample geometries accurately.
 
-TDS and TRTS datasets typically consist of two measurements: (1) a terahertz pulse that has passed through the sample, and (2) a terahertz pulse that has passed through a known reference. The picture below depicts this general setup, with a THz pulse passing through a layered reference in which all the layers are well characterized, as well as through a sample which contains a layer whose refractive index we'd like to measure.![Fig. 1](docs/fig01.png) 
+TDS and TRTS datasets typically consist of two measurements: (1) a THz pulse that has passed through the sample, and (2) a terahertz pulse that has passed through a known reference. The picture below depicts this general setup, with a THz pulse passing through a layered reference in which all the layers are well characterized, as well as through a sample which contains a layer whose refractive index we'd like to measure.![Fig. 1](docs/fig01.png) 
 
 The general principle of these measurements is that we can relate the differences between the sample and reference pulse with the unknown refractive index. Specifically, we can Fourier transform the pulses and and see how the amplitude and phase of each spectral component changes when passing through the sample (compared with the reference). We can express this as the transfer function $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$, i.e. the complex ratio of the sample and reference. This change in amplitude and phase can be related to a function of each of the layer's **refractive index** and **thickness**, i.e.:
 
 > $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega) = TF(\omega, \tilde{n}_\text{solve}, \tilde{n}_1, d_1, \tilde{n}_2,...)$
 
-where $n_\text{solve}$ is the unknown refractive index and the transfer function $TF(\omega, \tilde{n}_\text{solve})$ is a function consisting of Fresnel coefficients and propagation terms.[^1] This can be written more succinctly as $TF(\omega, \tilde{n}_\text{solve})$ since all $n_i$ except $n_{solve}$ are known, as are all $d_i$. The complex ratio $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$ is measured experimentally, so once we have the transfer function, we can go frequency-by-frequency and find the refractive index $\tilde{n}_\text{solve}$ which best reproduces the experimental value---that is, what value of $\tilde{n}_{solve}$ brings $TF(\omega, \tilde{n}_{solve})$  closest to the measured value of $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$
+where $n_\text{solve}$ is the unknown refractive index and the transfer function $TF(\omega, \tilde{n}_\text{solve})$ is a function consisting of Fresnel coefficients and propagation terms.[^1][^2] This can be written more succinctly as $TF(\omega, \tilde{n}_\text{solve})$ since all $n_i$ except $n_{solve}$ are known, as are all $d_i$. The complex ratio $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$ is measured experimentally, so once we have the transfer function, we can go frequency-by-frequency and find the refractive index $\tilde{n}_\text{solve}$ which best reproduces the experimental value---that is, what value of $\tilde{n}_{solve}$ brings $TF(\omega, \tilde{n}_{solve})$  closest to the measured value of $\frac{\tilde{E}_{s}}{\tilde{E}_{r}}(\omega)$
 
 With this in mind, the package performs the following tasks:
 
-1. For a given geometry, construct the appropriate transfer function
-2. Loop through a range of frequencies and fit the refractive index to the experimental value at each frequency. 
+1. For a given geometry, constructs the appropriate transfer function
+2. Loops through a range of frequencies, and run an optimization routine that finds the refractive index that most closely matches the transfer function to the experimental value.
 
-[^1]: More details can be found in the accompanying paper and this [TDS tutorial by Neu et. al.](https://aip.scitation.org/doi/full/10.1063/1.5047659)  
+
 
 
 
@@ -107,11 +107,11 @@ The settings part of the input file controls the amplitude cutoff, frequency ran
 
 ### Geometry Specification
 
-The next portion of the input file gives the geometries for the sample and reference.  Each of these geometries consists of an array of layers, each containing fields for the name of the layer, the thickness of the layer in microns (`d`), and the (complex) refractive index of the layer (`n`).  The name is included only for clarity--it is not used in the program. There are a number of options for specifying the refractive index: 
+The next portion of the input file gives the geometries for the sample and reference.  Each of these geometries consists of an array of layers, each containing fields for the name of the layer, the thickness of the layer in micrometers (`d`), and the (complex) refractive index of the layer (`n`).  The name is included only for clarity--it is not used in the program. There are a number of options for specifying the refractive index: 
 
 * `"solve"` (denoting the layer whose refractive index we're solving for)
 * A number (including complex values)
-* A path to a file containing the frequency-by-frequency refractive index. This must be in the csv format, with the first column denoting the frequency (in THz), the second column giving the real part, and the (optional) third column giving the imaginary part.
+* A path to a file containing the frequency-by-frequency refractive index. The code accepts files in the csv format, with the first column denoting the frequency (in THz), the second column giving the real part, and the (optional) third column giving the imaginary part. Other formats may work as well, provided they follow this general format and are compatible with MATLAB's `importdata` function.
 
 If the reference is not specified, it is assumed to be air (with the same thickness as the sample). 
 
@@ -142,7 +142,7 @@ The example below shows the geometry specification for an experiment measuring t
 
 # Functions And Classes
 
-This section describes each of the functions and classes in the package. For all functions, a description of the expected input is given. For important ("Primary") functions, a fuller description of the function is given as well. To give a sense of the overall architecture of the library, the relationship between the functions in the diagram below, where the arrows point to the functions called by each function. Although most users will only call `nelly_main`, the explanations of the other functions may be helpful in diagnosing bugs or useful for users who want to customize the code for their particular purposes. All times are in ps and all frequencies are in THz.
+This section describes each of the functions and classes in the package. For all functions, a description of the expected input is given. For important ("Primary") functions, a fuller description of the function is given as well. To give a sense of the overall architecture of the library, the relationship between the functions is shown in the diagram below, where the arrows point to the functions called by each function. Although most users will only call `nelly_main`, the explanations of the other functions may be helpful in diagnosing bugs or useful for users who want to customize the code for their particular purposes. All times are in picoseconds (ps) and all frequencies are in THz.
 
 <img src="C:\Users\utayv\OneDrive\Desktop\grad\research\cordouan\docs\function_map.png" alt="function_map" style="zoom:80%;" />
 
@@ -156,9 +156,9 @@ This section describes each of the functions and classes in the package. For all
       1. Load settings and geometry from the input file (`load_input`). 
       2. Process experimental data: pad (`time_pad`), Fourier transform (`fft_func`), and use these results to calculate the  experimental transfer function (`exp_tf`)
    2. **Build transfer function** Take the geometries loaded from the input file and hand them off to the `build_transfer_function_tree` function.
-   3. **Fitting** Loops through the frequencies specified in the input file and finds the refractive index $n$ where the predicted transfer function best reproduces the experimental transfer function at that frequency. This optimization is done with MATLAB's `fminsearch` function.
+   3. **Fitting** Loops through the frequencies specified in the input file and finds the refractive index $n$ where the predicted transfer function best reproduces the experimental transfer function at that frequency (i.e. minimizes the error defined by $Error(\omega) = \left(\log(|TF(\omega)|)-\log(|TF_{exp}(\omega|)\right)^2 + \left((\angle TF(\omega) - \angle TF_{exp}(\omega) + \pi \mod 2\pi )-\pi \right)^2$) This optimization is done with MATLAB's `fminsearch` function.
 
-   **Arguments**
+   *Arguments*
 
    * `input` : gives input geometry and other settings for the calculation. This can either be a filename for a JSON file (see specification above) or a MATLAB struct variable containing the same information. 
    * `t_smp` : an array containing time points for the sample time domain trace (in ps)
@@ -166,14 +166,14 @@ This section describes each of the functions and classes in the package. For all
    * `t_ref` : an array containing time points for the reference time domain trace (in ps)
    * `A_ref` : an array containing the reference pulse amplitude points corresponding to `t_ref`
 
-   **Output** 
+   *Output*
 
    * `freq`: an array containing the frequencies (THz) at which the refractive index was calculated
    * `n_fit`: an array of complex values for the refractive index. The $i^{th}$ element corresponds to the $i^{th}$ element in `freq`. For the imaginary part, positive values correspond to loss.
    * `freq_full`: an array containing a finer mesh of frequency points directly from the padded Fourier transform.
    * `tf_full`: an array containing the transfer function ($\frac{E_{smp}}{E_{ref}}$). The $i^{th}$ element corresponds to the $i^{th}$ element in `freq_full`
    * `tf_spec` : an array containing the transfer function ($\frac{E_{smp}}{E_{ref}}$) at a coarser spacing. The $i^{th}$ element corresponds to the $i^{th}$ element of `freq`
-   * `tf_pred`: an array containing the transfer function predicted based on the extracted refractive index values (i.e. $TF_(\tilde{n}_{extracted},\omega)$. The can be compared with the experimental transfer function to assess the accuracy of the extracted refractive index. The $i^{th}$ element corresponds to the $i^{th}$element of `freq`
+   * `tf_pred`: an array containing the transfer function predicted based on the extracted refractive index values (i.e. $TF(\tilde{n}_{extracted},\omega)$. The can be compared with the experimental transfer function to assess the accuracy of the extracted refractive index. The $i^{th}$ element corresponds to the $i^{th}$element of `freq`
    * `func`: a function which takes two arguments -- a frequency (in THz) and the value for the unknown refractive index--and returns the predicted transfer function values at that frequency assuming that the unknown refractive index is the value given. 
    * `spec_smp`: the spectrum (i.e. the Fourier coefficients) for the sample pulse (i.e. $E_{smp}(\omega)$ ). The $i^{th}$element corresponds to the $i^{th}$ element of `freq`.
    * `spec_ref` : the spectrum (i.e. the Fourier coefficients) for the reference pulse (i.e. $E_{ref}(\omega)$). The element corresponds to the $i^{th}$ element of `freq`.
@@ -193,7 +193,7 @@ This section describes each of the functions and classes in the package. For all
 1. `estimate_n` gives an estimate of the real part of the unknown refractive index based on the sample and reference geometries and the delay between the peak of the sample pulse and the peak of reference pulse.
    *Arguments*
 
-   1. `delay`: time delay (in picoseconds) between the peak of the sample pulse and the peak of the reference pulse.
+   1. `delay`: time delay (in ps) between the peak of the sample pulse and the peak of the reference pulse.
    2. `input`: a struct variable containing the frequency range and sample geometries. This can be created by calling `load_input` on an input file or by creating a struct variable with the required fields manually.
 
    *Output*
@@ -343,7 +343,7 @@ This section describes each of the functions and classes in the package. For all
 
 Several post processing and debugging utilities can be found in the `utilities` folder. The functions can be used for processing the extracted refractive index to obtain other properties (permittivity, conductivity, etc.) as well for debugging.
 
-1. `drude_fit` Fits the given conductivity to the Drude model.
+1. `drude_fit` Fits the given conductivity to the Drude model. The conductivity can be calculated from the refractive index output with the `n_to_photocond` function discussed below.
 
    *Arguments*
 
@@ -397,7 +397,7 @@ Several post processing and debugging utilities can be found in the `utilities` 
 
    `tf_spec`: the experimental transfer function corresponding to the frequency points in `freq`.
 
-   `d`: the thickness (in microns) of the layer with the unknown refractive index.
+   `d`: the thickness (in micrometers) of the layer with the unknown refractive index.
 
    By default, the refractive index of the material the unknown layer is replacing is assumed to be 1. This would be the case when the reference is simply air, or when the reference is an empty cuvette which is then filled with the sample substance. When the sample is replacing a non-air material, the refractive index must be provided by additional arguments: `just_propagation(..., 'n_off', <replaced refractive index>)`
 
@@ -423,13 +423,13 @@ Several post processing and debugging utilities can be found in the `utilities` 
 
    `sig`: An array containing the photoconductivity (in S/m).
 
-6. `tinkham` extracts the conductivity from the experimental transfer function using the assumptions made by Tinkham and Glover (DOI: 10.1103/PhysRev.108.243).
+6. `tinkham` extracts the conductivity from the experimental transfer function using the assumptions made by Tinkham and Glover[^3]
 
    *Arguments*
 
    `tf_spec`: An array containing the experimental transfer function.
 
-   `d`: the thickness of the unknown layer (in microns).
+   `d`: the thickness of the unknown layer (in micrometers).
 
    `nn`: a scalar or array containing the refractive index of the substrate or non-photoexcited material.
 
@@ -476,3 +476,10 @@ In many cases the best troubleshooting approach is to use the `error_map` functi
      
 
   
+
+# References
+
+[^ 1]: Main text accompanying this paper
+[^2]:  (1) Neu, J.; Schmuttenmaer, C. A. Tutorial: An Introduction to Terahertz Time Domain Spectroscopy (THz-TDS). *Journal of Applied Physics* **2018**, *124* (23), 231101. https://doi.org/10.1063/1.5047659.
+[^3]: (1) Glover, R. E.; Tinkham, M. Conductivity of Superconducting Films for Photon Energies between 0.3 and $40k{T}_{c}$. *Phys. Rev.* **1957**, *108* (2), 243–256. https://doi.org/10.1103/PhysRev.108.243.
+
