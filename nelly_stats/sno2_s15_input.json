@@ -1,0 +1,31 @@
+{
+    "settings":
+    {
+	"freq_lo": 0.5,
+	"freq_step": 0.05,
+	"freq_hi": 2.2,
+	"a_cut": 1e-6,
+	"fft" : {
+	    "windowing_type": "none",
+	    "windowing_width" : 2,
+	    "padding" : 17
+	}
+    },
+    
+    "sample":
+    [
+	{"name": "air",      "d": 0,    "n": 1},
+	{"name": "subs",     "d": 1000, "n": 1.95},
+    {"name": "sno2",     "d": 2,    "n": 2.2},
+	{"name": "sno2_ill", "d": 2,    "n": "solve"},
+	{"name": "air",      "d": 0,    "n": 1}
+    ],
+    
+    "reference":
+    [
+	{"name": "air",      "d": 0,    "n": 1},
+	{"name": "subs",     "d": 1000, "n": 1.95},
+	{"name": "sno2",     "d": 4, "n": 2.2},
+	{"name": "air",      "d": 0,   "n": 1}
+    ]
+}
