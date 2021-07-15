@@ -125,8 +125,37 @@ for ii = 1:numel(freq)
        extra_args.PROGRESS_BAR.Value = ii/numel(freq);
        pause(0.1)
     end
-    n_opt = fminsearch(err, n_prev, opts);
-
+    
+    % Since fminsearch creates the initial simplex as a factor of the 
+    % starting point, it can get stuck at values near zero. This can be an 
+    % issue for the imaginary part of the refractive index, which is often
+    % near 0. The k_min option sets a floor value to avoid this (i.e. 
+    % the optimization will start at (n_prev, k_min) instead of (n_prev,
+    % k_prev) if k_prev < k_min).
+    if isfield(extra_args, 'K_MIN')
+        if abs(n_prev(2)) < extra_args.K_MIN
+            n_prev(2) = sign(n_prev(2))*extra_args.K_MIN;
+        end
+    end
+    
+    % By default, the initial simplex for the fminsearch Nelder-Mead 
+    % implementation is formed by adding
+    % 5% to each component of the starting vector (i.e. (x,y), (1.05x, y),
+    % (x, 1.05y). The simplex scale options changes the size of the 
+    % initial simplex and centers it on the optimal point for the 
+    % previous previous frequency, i.e. the starting point is (x, y)
+    % such that the centroid of (x,y), ((1+s)*x, y), (x, (1+s)*y) is 
+    % the previous optimal point.
+    if isfield(extra_args, 'SIMPLEX_SCALE')
+        n_start = 3*n_prev/(3+extra_args.SIMPLEX_SCALE);
+        err = @(dn) n_error(func(freq(ii),...
+            complex(n_start(1)+dn(1), n_start(2)+dn(2))), tf_spec(ii));
+        dn_opt = fminsearch(err, ones(1,2)*extra_args.SIMPLEX_SCALE,...
+            opts);
+        n_opt = n_start + dn_opt;
+    else
+        n_opt = fminsearch(err, n_prev, opts);
+    end
     n_prev = n_opt;
     n_fit(:,ii) = n_opt;
     fprintf('%0.2f THz: n = %s\n', freq(ii), num2str(complex(n_opt(1), n_opt(2))))

@@ -1,0 +1,21 @@
+{
+    "settings":
+    {
+	"a_cut": 1e-5,
+	"freq_lo": 0.2,
+	"freq_step": 0.02,
+	"freq_hi": 2.2,
+	"fft" : {
+	    "windowing_type": "none",
+	    "windowing_width" : 2,
+	    "padding" : 18
+	}
+    },
+    
+    "sample":
+    [
+    {"name": "air",    "d": 0,    "n": 1},
+    {"name": "pellet", "d": 1000,   "n": "solve"},
+    {"name": "air",    "d": 0,    "n": 1}
+    ]
+}

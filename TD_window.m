@@ -1,22 +1,18 @@
 %% Time-Domain Windowing Function (TD_window.m)
 % Jacob A. Spies
 % 12 Dec 2019
-
 % Windows THz time-domain data to suppress etalons. Currently uses either a
 % Gaussian or square (top-hat) filter centered at the peak of the THz
 % pulse.
-
 %% Description of input parameters:
 % TD_data: data array containing time in column 1 and amplitude in column 2
 % type: 'gauss' for Gaussian or 'square' for square windowing. Any other
 %           input returns data without windowing.
 % width: double setting width of the window. For 'gauss' this is sigma and
 %           for 'square' this is the absolute width.
-
 %% Description of output:
 % TD_data_windowed: Outputs windowed data, mirroring input TD_data (so it
 %           includes time as well.
-
 function amplitude_windowed = TD_window(time,amplitude,type,width)
 
     % Find maximum of time-domain data (absolute) and define center offset

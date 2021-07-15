@@ -144,7 +144,7 @@ The example below shows the geometry specification for an experiment measuring t
 
 This section describes each of the functions and classes in the package. For all functions, a description of the expected input is given. For important ("Primary") functions, a fuller description of the function is given as well. To give a sense of the overall architecture of the library, the relationship between the functions is shown in the diagram below, where the arrows point to the functions called by each function. Although most users will only call `nelly_main`, the explanations of the other functions may be helpful in diagnosing bugs or useful for users who want to customize the code for their particular purposes. All times are in picoseconds (ps) and all frequencies are in THz.
 
-<img src="C:\Users\utayv\OneDrive\Desktop\grad\research\cordouan\docs\function_map.png" alt="function_map" style="zoom:80%;" />
+<img src="docs/function_map.png" alt="function_map" style="zoom:80%;" />
 
 
 

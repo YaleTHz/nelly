@@ -1,0 +1,32 @@
+Data acquired using Kairos v2 (a multi-loop, event-driven state machine).	
+Iterations Completed:	3
+Iterations Requested:	3
+Time Started:	2021-07-01 at 19:24:38
+Time Completed:	2021-07-01 at 19:31:19
+Total Scan Time:	401.5 seconds
+Both Channels?	No
+Channel 1:	X
+Channel 2:	Not Collected.
+Time Constant:	30 ms
+Sample Rate:	16 Hz
+Sensitivity:	5 mV/nA
+Phase:	-16.56
+Lock-In Ref Source:	External
+Lock-In Ref Frequency (Hz):	4200.02
+Sine Out Amplitude (V):	0.20
+Data Start Pos. in ps:	-143.000954
+Data End Pos. in ps:	-100.000667
+Motor Start Pos. in steps:	-21437575
+Motor End Pos. in steps:	-14987153
+Trigger Offset in steps:	0
+Trigger Pos. in steps:	-21435128
+Number of Points:	2085
+Scan Rate in ps/s:	0.330000
+Scan Rate in rev/s:	49465.350000
+Data Spacing in ps:	0.02
+
+Comments: 
+Antenna Voltage: 
+Name of the Sample:  	silicon (470 um)
+ambient condition
+ThorLabs Position: 21.599988

@@ -78,14 +78,30 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
                 end
                 curr_node = curr_node.parent;
             end
-
         end
         
-        % determines if the path to this node includes cross-layer etalons
+        % returns the transmission nodes in the path to the current node
+        function ts = transmissions(obj)
+            curr_node = obj;
+            ts = [];
+            
+            while isa(curr_node, 'tf_node')
+                if isa(curr_node, 'interface_node')
+                    if curr_node.type == 1
+                        ts = [ts curr_node];
+                    end
+                end
+                curr_node = curr_node.parent;
+            end
+        end
+        
+        % determines if the path to an emitted node includes 
+        % cross-layer etalons
         function t_or_f = crosslayer(obj)
             refs = obj.reflections;
             froms = arrayfun(@(x) x.from, refs);
-            t_or_f = numel(unique(froms)) > 1;
+            num_trans = numel(obj.transmissions);
+            t_or_f = num_trans > (obj.num_layers - 1);
         end
         
         function tf_bd = tot_tf_breakdown(obj)

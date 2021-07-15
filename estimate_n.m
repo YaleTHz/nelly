@@ -3,7 +3,6 @@
 % the refractive index in the frequency range specified in the input file. 
 % For the unknown layer, the refractive index is estimated using the delay
 % of the sample pulse relative to the reference
-
 function n_est = estimate_n(delay, input)
 freq = input.settings.freq_lo:input.settings.freq_step:input.settings.freq_hi;
 
