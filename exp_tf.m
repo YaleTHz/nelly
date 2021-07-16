@@ -1,4 +1,4 @@
-function [freq, tf_spec, freq_full, tf_full, spec_smp, spec_ref] = exp_tf(t_smp, A_smp, t_ref, A_ref, input)
+function [freq, tf_spec, freq_full, tf_full, spec_smp, spec_ref, smp_full, ref_full] = exp_tf(t_smp, A_smp, t_ref, A_ref, input)
 % EXP_TF    Fourier transform time-domain traces and calculate transfer
 % functions
 % 
@@ -27,8 +27,11 @@ function [freq, tf_spec, freq_full, tf_full, spec_smp, spec_ref] = exp_tf(t_smp,
 %% calculate experimental transfer function
 % fourier transform time domain data
 fft_sets = input.settings.fft;
-[freq_smp, spec_smp] = fft_func(t, A_smp_pad, fft_sets);
-[freq_ref, spec_ref] = fft_func(t, A_ref_pad, fft_sets);
+
+%[freq_smp, spec_smp] = fft_func(t, A_smp_pad, fft_sets);
+%[freq_ref, spec_ref] = fft_func(t, A_ref_pad, fft_sets);
+[freq_smp, spec_smp] = fft_func(t, A_smp, fft_sets);
+[freq_ref, spec_ref] = fft_func(t, A_ref, fft_sets);
 
 freq_full = freq_ref;
 tf_full = spec_smp./spec_ref;
@@ -37,6 +40,8 @@ tf_full = spec_smp./spec_ref;
 % discretize
 spec_smp = spec_smp(freq_full <= input.settings.freq_hi);
 spec_ref = spec_ref(freq_full <= input.settings.freq_hi);
+smp_full = spec_smp;
+ref_full = spec_ref;
 freq_full = freq_full(freq_full <= input.settings.freq_hi);
 tf_full = tf_full(freq_full <= input.settings.freq_hi);
 
@@ -57,7 +62,7 @@ tf_spec = spec_smp_disc./spec_ref_disc;
         disc_y = ones(1, length(x_new));
         
         for ii = 1:length(x_new)
-            inds = x >= x_new(ii)-dx & x <= x_new(ii) + dx;
+            inds = x >= (x_new(ii)-dx/2) & x < (x_new(ii) + dx/2);
             disc_y(ii) = mean(y(inds));
         end
     end

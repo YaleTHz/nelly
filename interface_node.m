@@ -6,6 +6,10 @@ classdef  interface_node < handle & tf_node
         amp    % amplitude after this node
         type   % +1 for transmission, -1 for reflection
         child  % layer_node child
+        from_solve  % is n_solve the from layer?
+        into_solve % is n_solve the into layer?
+        nj % refractive index of from layer
+        nk % refractive index of into layer
     end
     
     methods
@@ -18,8 +22,20 @@ classdef  interface_node < handle & tf_node
             n_from = geom(from).n_func(freq, n_solve);
             n_into = geom(into).n_func(freq, n_solve);
             
+            obj.nj = n_from;
+            obj.nk = n_into;
+            
             rf = node_constants.rf;
             tr = node_constants.tr;
+            
+            obj.from_solve = false;
+            obj.into_solve = false;
+            if strcmp(geom(from).n, 'solve')
+                obj.from_solve = true;
+            end
+            if strcmp(geom(into).n, 'solve')
+                obj.into_solve = true;
+            end
             
             % handle reflection 
             if type == -1
@@ -32,6 +48,7 @@ classdef  interface_node < handle & tf_node
                end
             end
             
+            % handle transmission
             if type == +1
                 amp = amp_prev*abs(tr(n_from, n_into));
                 obj.amp = amp;   
@@ -39,6 +56,42 @@ classdef  interface_node < handle & tf_node
                 if (amp > a_cut) && into < numel(geom)
                     obj.child = layer_node(into, into-from, t_acc, amp, ...
                         geom, freq, n_solve, t_cut, a_cut, obj);
+                end
+            end
+        end
+        
+        function [dm_re, dm_im] = d_mat(obj)
+            if ~(obj.from_solve || obj.into_solve)
+                dm_re = zeros(2,2);
+                dm_im = zeros(2,2);
+                return
+            end
+            
+            % transmission
+            if obj.type == +1
+                % from (nj)
+                if obj.from_solve
+                    [dm_re, dm_im] = d_mat_tr(obj.nj, obj.nk, 'j');
+                    return
+                end
+                % into (nk)
+                if obj.into_solve
+                    [dm_re, dm_im] = d_mat_tr(obj.nj, obj.nk, 'k');
+                    return
+                end
+            end
+            
+            % reflection
+            if obj.type == -1
+                % from (nj)
+                if obj.from_solve
+                    [dm_re, dm_im] = d_mat_rf(obj.nj, obj.nk, 'j');
+                    return 
+                end
+                % into (nk)
+                if obj.into_solve
+                    [dm_re, dm_im] = d_mat_rf(obj.nj, obj.nk, 'k');
+                    return
                 end
             end
         end

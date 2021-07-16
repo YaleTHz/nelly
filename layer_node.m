@@ -6,6 +6,10 @@ classdef layer_node < handle & tf_node
         dir    % forward (+1, i.e. increasing index) or backward (-1)
         ref    % interface node for reflection
         trn    % interface node for transmission
+        solve  % is this propagation through one of the layers we're 
+               % trying to solve for
+        d      % thickness of layer (in microns)
+        freq   
     end
     
     methods
@@ -17,6 +21,11 @@ classdef layer_node < handle & tf_node
             
             obj.index = index; obj.dir = dir; obj.parent = parent;
             obj.num_layers = numel(geom);
+            
+            % these variables are used for constructing the derivatives
+            obj.solve = strcmp(geom(index).n, 'solve');
+            obj.d = geom(index).d;
+            obj.freq = freq; 
             
             % calculate new time delay
             n = geom(index).n_func(freq, n_solve);
@@ -49,6 +58,16 @@ classdef layer_node < handle & tf_node
             end            
         end
 
+        function [dm_re, dm_im] = d_mat(obj)
+            if ~obj.solve
+                dm_re = zeros(2,2);
+                dm_im = zeros(2,2);
+                return
+            end
+            
+            [dm_re, dm_im] = d_mat_prop(obj.freq, obj.d, obj.tf);
+        end
+        
         function cs = children(obj)
             cs = [];
             if isa(obj.ref, 'interface_node')

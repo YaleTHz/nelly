@@ -16,11 +16,61 @@ classdef tf_node < handle & matlab.mixin.Heterogeneous
             end
         end
         
+        function d = tot_mat(obj)
+            if isa(obj.parent, 'tf_node')
+                d = obj.parent.tot_mat*obj.mat;
+            else
+                d = obj.mat;
+            end
+        end
+        
+        function d = tot_mat_emitted(obj)
+            t_tf_al = obj.tot_tf_all_leaves;
+            d = [real(t_tf_al) -imag(t_tf_al);
+                imag(t_tf_al) real(t_tf_al)];
+        end
+        
+        function [d_re, d_im] = tot_d_mat(obj)
+            if isa(obj.parent, 'tf_node')
+                p = obj.parent.tot_mat;
+                [dp_re, dp_im] = obj.parent.tot_d_mat;
+                m = obj.mat;
+                [dm_re, dm_im] = obj.d_mat;
+                d_re = m*dp_re + dm_re*p;
+                d_im = m*dp_im + dm_im*p;
+            else
+                [d_re, d_im] = obj.d_mat;
+            end
+        end
+        
+        function [d_re, d_im] = tot_d_mat_emitted(obj)
+            d_re = zeros(2,2);
+            d_im = zeros(2,2);
+            
+            for nd = obj.emitted
+                [dr, di] = nd.tot_d_mat;
+                d_re = d_re + dr;
+                d_im = d_im + di;
+            end
+        end
+        
+        function [jac] = jacobian(obj)
+            [d_re, d_im] = obj.tot_d_mat_emitted;
+            jac = [d_re(:,1) d_im(:,1)];
+        end
+        % transfer function term for this node in terms of matrix
+        % i.e. M*[re; im] is equivalent to multiplying (re + i*im) by
+        % the tf term
+        function m = mat(obj)
+            m = [real(obj.tf) -imag(obj.tf);
+                imag(obj.tf) real(obj.tf)];
+        end
+        
         function pars = parents(obj)
             pars = [];
             p = obj.parent;
             while isa(p, 'tf_node')
-                pars = [pars p.id];
+                pars = [pars p];
                 p = p.parent;
             end
         end

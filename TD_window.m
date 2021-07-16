@@ -43,6 +43,6 @@ function amplitude_windowed = TD_window(time,amplitude,type,width)
     else
         % No window applied for other input arguments for 'type'
         amplitude_windowed = amplitude;
-        fprintf('No window applied to time-domain data!\n')
+        %fprintf('No window applied to time-domain data!\n')
     end
 end

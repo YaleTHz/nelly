@@ -98,6 +98,7 @@ end
 k_mean = mean([min(freq) max(freq)])*2*pi*1e12/3e14;
 d_inds = find(strcmp({input.sample.n}, 'solve'));
 d_tot = sum(arrayfun(@(ii) input.sample(ii).d, d_inds));
+
 n_prev = [real(n_est) log(mean(abs(tf_spec)))/(d_tot*k_mean)];
 
 a_cut = input.settings.a_cut;
