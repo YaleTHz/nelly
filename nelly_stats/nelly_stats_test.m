@@ -87,7 +87,7 @@ for ii = 1:numel(freq)
     tf_probs{ii} = tf_prob;
     pdf = @(x) tf_prob(func(freq(ii), x)-1);
     pdfs{ii} = pdf;
-    sig = 5e-3;
+    sig = 1e-2;
     proppdf = @(x,y) normpdf(abs(x-y), 0, sig);
     proprnd = @(x) x + sig*((rand-0.5) + 1i*(rand-0.5));
     
